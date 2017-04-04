@@ -2,39 +2,32 @@ package structures;
 
 import enums.Place;
 
-import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 /**
  * Created by Tobiasz Rumian on 19.03.2017.
  */
-public class BinaryHeap implements Structures {
+public class BinaryHeap implements Structure {
     private static final Integer lenght = 100000; //przechowuje informacje o wielkości całej tablicy
     private Integer heapSize; //przechowuje informacje o wielkości kopca
-    private static final Integer[] heapTable = new Integer[lenght];
-    //
-    private static final int d = 2;
+    private static final Integer[] heapTable = new Integer[lenght]; //tablica przechowująca kopiec
+    private static final Integer heapChildren = 2; //ilość dzieci przypadająca na rodzica
 
     public BinaryHeap() {
         heapSize = 0;
-        Arrays.fill(heapTable, -1);
     }
 
-    //
     @Override
     public String info() {
-        return null;
-    }
-
-    @Override
-    public void loadFromFile() {
-
+        return "Tablicowa struktura danych reprezentująca drzewo binarne,\n" +
+                " którego wszystkie poziomy z wyjątkiem ostatniego muszą być pełne.\n" +
+                " W przypadku, gdy ostatni poziom drzewa nie jest pełny,\n" +
+                " liście ułożone są od lewej do prawej strony drzewa.";
     }
 
     @Override
     public void subtract(Place place, Integer number) throws IllegalArgumentException, IndexOutOfBoundsException {
         if (isEmpty()) throw new NoSuchElementException("Underflow Exception");
-
         try {
             heapTable[find(number)] = heapTable[heapSize - 1];
         } catch (Exception e) {
@@ -46,11 +39,10 @@ public class BinaryHeap implements Structures {
 
     @Override
     public void add(Place place, Integer number) throws IllegalArgumentException {
-        if (isFull())
-            throw new NoSuchElementException("Overflow Exception");
-        /** Percolate up **/
+        if (isFull()) throw new NoSuchElementException("Overflow Exception");
         heapTable[heapSize++] = number;
         heapifyUp(heapSize - 1);
+        show();
     }
 
     @Override
@@ -65,19 +57,14 @@ public class BinaryHeap implements Structures {
     }
 
     @Override
-    public String show() throws NullPointerException {
-        if (heapTable == null||heapTable.length==0) throw new IndexOutOfBoundsException("Tablica nie zawiera takiego rekordu.");
+    public String show(){
+        if (heapTable.length==0) throw new IndexOutOfBoundsException("Tablica nie zawiera rekordu.");
         StringBuilder sb=new StringBuilder();
-        for (Integer i : heapTable) sb.append("[").append(i).append("]");
+        for (Integer i : heapTable)if(i!=null)sb.append("[").append(i).append("]");
         return sb.toString();
+        //TODO: Wyświetlanie kopca w postaci graficznej
     }
 
-    @Override
-    public void test() {
-
-    }
-
-    //
     private boolean isEmpty() {
         return heapSize == 0;
     }
@@ -90,14 +77,14 @@ public class BinaryHeap implements Structures {
      * Function to  get index parent of i
      **/
     private int parent(int i) {
-        return (i - 1) / d;
+        return (i - 1) / heapChildren;
     }
 
     /**
      * Function to get index of k th child of i
      **/
     private int kthChild(int i, int k) {
-        return d * i + k;
+        return heapChildren * i + k;
     }
 
     /**
@@ -134,7 +121,7 @@ public class BinaryHeap implements Structures {
         int bestChild = kthChild(ind, 1);
         int k = 2;
         int pos = kthChild(ind, k);
-        while ((k <= d) && (pos < heapSize))
+        while ((k <= heapChildren) && (pos < heapSize))
         {
             if (heapTable[pos] < heapTable[bestChild])
                 bestChild = pos;

@@ -4,8 +4,13 @@ import enums.Place;
 import enums.Task;
 import structures.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.stream.Stream;
 
 /**
  * Created by Tobiasz Rumian on 19.03.2017.
@@ -16,12 +21,16 @@ public class View {
     private Table table = new Table();
     private BidirectionalList bidirectionalList = new BidirectionalList();
     private BinaryHeap binaryHeap = new BinaryHeap();
-    private NewTree_BST newTree_bst = new NewTree_BST();
-
+    private BstTree bstTree_ = new BstTree();
+    private RedBlackTree redBlackTree = new RedBlackTree();
     public View() {
+        mainMenu();
+    }
+
+    private void mainMenu() {
         message(messageStart(), false);
-        message(messageMainMenu(), false);
         do {
+            message(messageMainMenu(), false);
             selectFromStartMenu(select("Podaj numer zadania:"));
         } while (!kill);
     }
@@ -59,11 +68,14 @@ public class View {
     }
 
     public static Integer select(String message) {
-        message(message, false);
-        Scanner in = new Scanner(System.in);
-        String x = in.nextLine();
-        Integer selected = Integer.parseInt(x);
-        return selected;
+        do {
+            try {
+                message(message, false);
+                Scanner in = new Scanner(System.in);
+                return Integer.parseInt(in.nextLine());
+            } catch (NumberFormatException ignored) {
+            }
+        } while (true);
     }
 
     public static void message(String message, Boolean error) {
@@ -95,8 +107,8 @@ public class View {
 
 
     private void selectTask(Task task) {
-
-        Structures structure;
+        Boolean kill = false;
+        Structure structure;
         if (task == Task.TABLE) {
             structure = table;
         } else if (task == Task.LIST) {
@@ -104,9 +116,9 @@ public class View {
         } else if (task == Task.HEAP) {
             structure = binaryHeap;
         } else if (task == Task.TREE_BST) {
-            structure = newTree_bst;
+            structure = bstTree_;
         } else {
-            structure = table;
+            structure = redBlackTree;
         }
         do {
             message(messageTask(), false);
@@ -115,60 +127,65 @@ public class View {
                 case 1: structure.info();
                     break;
                 case 2:
-                    structure.loadFromFile();
+                    loadFromFile(structure);
                     structure.show();
                     break;
                 case 3: View.message(View.title("odejmowanie"), false);
-                    View.message("Gdzie odjac liczbe?", false);
-                    View.message("1. Poczatek", false);
-                    View.message("2. Koniec", false);
-                    View.message("3. Losowo", false);
-                    do {
-                        switch (View.select("Podaj liczbe miejsca z ktorego chcesz usunac")) {
-                            case 1: place = Place.START;
-                                break;
-                            case 2: place = Place.END;
-                                break;
-                            case 3: place = Place.RANDOM;
-                                break;
+                    if (structure.getClass() != BinaryHeap.class) {
+                        View.message("Gdzie odjac liczbe?", false);
+                        View.message("1. Poczatek", false);
+                        View.message("2. Koniec", false);
+                        View.message("3. Losowo", false);
+
+                        do {
+                            switch (View.select("Podaj liczbe miejsca z ktorego chcesz usunac")) {
+                                case 1: place = Place.START;
+                                    break;
+                                case 2: place = Place.END;
+                                    break;
+                                case 3: place = Place.RANDOM;
+                                    break;
                                 default: message("Nieprawidłowy wybór!", true);
-                        }
-                    } while (place == null);
+                            }
+                        } while (place == null);
+                    }
                     structure.subtract(place, null);
                     structure.show();
                     break;
                 case 4:
                     View.message(View.title("dodawanie"), false);
-                    View.message("Gdzie wstawic liczbe?", false);
-                    View.message("1. Poczatek", false);
-                    View.message("2. Koniec", false);
-                    View.message("3. Losowo", false);
-                    do {
-                        switch (View.select("Podaj liczbe miejsca w ktore chcesz wstawic")) {
-                            case 1: place = Place.START;
-                                break;
-                            case 2: place = Place.END;
-                                break;
-                            case 3: place = Place.RANDOM;
-                                break;
+                    if (structure.getClass() != BinaryHeap.class) {
+                        View.message("Gdzie wstawic liczbe?", false);
+                        View.message("1. Poczatek", false);
+                        View.message("2. Koniec", false);
+                        View.message("3. Losowo", false);
+                        do {
+                            switch (View.select("Podaj liczbe miejsca w ktore chcesz wstawic")) {
+                                case 1: place = Place.START;
+                                    break;
+                                case 2: place = Place.END;
+                                    break;
+                                case 3: place = Place.RANDOM;
+                                    break;
                                 default: message("Nieprawidłowy wybór!", true);
-                        }
-                    } while (place == null);
+                            }
+                        } while (place == null);
+                    }
                     structure.add(place, select("Podaj liczbe ktora chcesz wstawic"));
-                    structure.show();
+                    message(structure.show(),false);
                     break;
                 case 5:
                     View.message(View.title("znajdowanie"), false);
                     if (structure.find(View.select("Podaj liczbe")) == -1)
                         message("Liczba nie znajduje się w strukturze", true);
                     else message("Liczba znajduje się w strukturze", false);
-                    structure.show();
+                    message(structure.show(),false);
                     break;
                 case 6:
                     structure.show();
                     break;
                 case 7:
-                    structure.test();
+                    test(structure);
                     structure.show();
                     break;
                 case 0: kill = true;
@@ -186,4 +203,19 @@ public class View {
         return random.nextInt(max - min) + min;
     }
 
+    private void loadFromFile(Structure structure){
+        FileChooser fileChooser = new FileChooser();
+        try (Stream<String> stream = Files.lines(Paths.get(fileChooser.getPath()))) {
+            ArrayList<String> arrayList = new ArrayList<>();
+            stream.forEach(arrayList::add);
+            arrayList.remove(0);
+            arrayList.forEach(x -> structure.add(Place.END,Integer.parseInt(x)));
+        } catch (IOException e) {
+            e.getMessage();
+        }
+    }
+
+    private void test(Structure structure){
+
+    }
 }

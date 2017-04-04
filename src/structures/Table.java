@@ -1,18 +1,12 @@
 package structures;
 
 import enums.Place;
-import view.FileChooser;
 import view.View;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.stream.Stream;
 
 /**
  * Created by Tobiasz Rumian on 19.03.2017.
  */
-public class Table implements Structures {
+public class Table implements Structure {
     private Integer[] table = null;
 
     @Override
@@ -20,17 +14,6 @@ public class Table implements Structures {
         return "Tablica – kontener uporządkowanych danych takiego samego typu," +
                 " w którym poszczególne elementy dostępne są za pomocą kluczy (indeksu)." +
                 " Indeks najczęściej przyjmuje wartości numeryczne.";
-    }
-
-    @Override
-    public void loadFromFile() {
-        FileChooser fileChooser = new FileChooser();
-        try (Stream<String> stream = Files.lines(Paths.get(fileChooser.getPath()))) {
-            stream.forEach(x -> add(Place.END, Integer.parseInt(x)));
-            subtract(Place.START, null);
-        } catch (IOException e) {
-            e.getMessage();
-        }
     }
 
     @Override
@@ -102,14 +85,9 @@ public class Table implements Structures {
 
     @Override
     public String show() {
-        if (table == null||table.length==0) throw new IndexOutOfBoundsException("Tablica nie zawiera takiego rekordu.");
+        if (table == null||table.length==0) return "Brak danych";
         StringBuilder sb=new StringBuilder();
         for (Integer i : table) sb.append("[").append(i).append("]");
         return sb.toString();
-    }
-
-    @Override
-    public void test() {
-
     }
 }
