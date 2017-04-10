@@ -13,7 +13,7 @@ public class BidirectionalList implements Structure {
     private Node firstElement;
     private Node lastElement;
 
-    public int size() {
+    public Integer size() {
         if (firstElement == null) return 0;
         Integer size = 0;
         Node list = firstElement;
@@ -125,5 +125,10 @@ public class BidirectionalList implements Structure {
             list=list.getAfter();
         }
     return sb.toString();
+    }
+
+    @Override
+    public String toString(){
+        return "Lista dwukierunkowa";
     }
 }

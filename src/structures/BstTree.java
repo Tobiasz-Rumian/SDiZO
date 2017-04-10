@@ -132,5 +132,20 @@ public class BstTree implements Structure {
         }
         return successor;
     }
+    @Override
+    public String toString(){
+        return "Drzewo BST";
+    }
+
+    @Override
+    public Integer size() {
+        return null;
+        //TODO: Wpaść jak to zrobić
+    }
+
+    @Override
+    public void clear() {
+        root=null;
+    }
 }
 

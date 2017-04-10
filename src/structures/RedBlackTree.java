@@ -219,4 +219,19 @@ public class RedBlackTree implements Structure {
         }
         return sb.toString();
     }
+    @Override
+    public String toString(){
+        return "Drzewo czerwono czarne";
+    }
+
+    @Override
+    public Integer size() {
+        return null;
+        //TODO: Wpaść jak to zrobić
+    }
+
+    @Override
+    public void clear() {
+        header=null;
+    }
 }

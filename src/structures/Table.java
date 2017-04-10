@@ -11,8 +11,8 @@ public class Table implements Structure {
 
     @Override
     public String info() {
-        return "Tablica – kontener uporządkowanych danych takiego samego typu," +
-                " w którym poszczególne elementy dostępne są za pomocą kluczy (indeksu)." +
+        return "Tablica – kontener uporządkowanych danych takiego samego typu,\n" +
+                " w którym poszczególne elementy dostępne są za pomocą kluczy (indeksu).\n" +
                 " Indeks najczęściej przyjmuje wartości numeryczne.";
     }
 
@@ -89,5 +89,19 @@ public class Table implements Structure {
         StringBuilder sb=new StringBuilder();
         for (Integer i : table) sb.append("[").append(i).append("]");
         return sb.toString();
+    }
+    @Override
+    public String toString(){
+        return "Tablica";
+    }
+
+    @Override
+    public Integer size() {
+        return table.length;
+    }
+
+    @Override
+    public void clear() {
+        table=null;
     }
 }

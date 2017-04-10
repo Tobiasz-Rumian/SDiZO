@@ -129,5 +129,19 @@ public class BinaryHeap implements Structure {
         }
         return bestChild;
     }
+    @Override
+    public String toString(){
+        return "Kopiec binarny";
+    }
+
+    @Override
+    public Integer size() {
+        return heapTable.length;
+    }
+
+    @Override
+    public void clear() {
+        heapSize=0;
+    }
 }
 

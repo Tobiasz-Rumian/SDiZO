@@ -16,5 +16,11 @@ public interface Structure {
     Integer find(Integer find);
 
     String show();
+
+    String toString();
+
+    Integer size();
+
+    void clear();
 }
 
