@@ -1,11 +1,12 @@
 package structures;
 
+import addons.PrintableNode;
 import enums.PlaceOnList;
 
 /**
  * Created by Tobiasz Rumian on 30.03.2017.
  */
-public class Node {
+public class Node implements PrintableNode {
     private Node before = null;
     private Node after = null;
     private Integer integer = null;
@@ -60,5 +61,25 @@ public class Node {
     public void setBefore(Node before) {
 
         this.before = before;
+    }
+
+    @Override
+    public PrintableNode getLeft() {
+        return before;
+    }
+
+    @Override
+    public PrintableNode getRight() {
+        return after;
+    }
+
+    @Override
+    public String getText() {
+        return integer.toString();
+    }
+
+    @Override
+    public String getColorString() {
+        return "";
     }
 }

@@ -1,5 +1,7 @@
 package addons;
 
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import java.util.Random;
 
 import static addons.Settings.getHowManyElements;
@@ -18,5 +20,21 @@ public class PopulationGenerator {
     }
     public Integer[] getPopulation(){
         return population;
+    }
+    public void saveToFile(){
+        try (PrintStream out = new PrintStream(new FileOutputStream("population.txt"))) {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (Integer aPopulation : population) stringBuilder.append(aPopulation).append("\n");
+            out.print(stringBuilder.toString());
+        }catch (Exception e){
+            e.getMessage();
+        }
+    }
+
+    public static void main(String[] args) {
+        Settings.message();
+        Settings.changeSettings();
+        PopulationGenerator populationGenerator=new PopulationGenerator();
+        populationGenerator.saveToFile();
     }
 }

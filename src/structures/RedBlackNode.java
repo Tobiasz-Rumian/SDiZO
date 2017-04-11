@@ -1,75 +1,101 @@
 package structures;
 
+import addons.PrintableNode;
 import enums.Color;
-import enums.PlaceOnList;
 
 /**
  * Created by Tobiasz Rumian on 04.04.2017.
  */
-public class RedBlackNode {
-        private RedBlackNode before = null;
-        private RedBlackNode after = null;
-        private Integer integer = null;
-        private Color color=null;
+public class RedBlackNode implements PrintableNode {
+    private RedBlackNode left = null;
+    private RedBlackNode right = null;
+    private RedBlackNode up = null;
+    private Integer integer = null;
+    private Color color = null;
 
-        public RedBlackNode(RedBlackNode before, RedBlackNode after, Integer integer) {
-            this.before = before;
-            this.after = after;
-            this.integer = integer;
-        }
+    public RedBlackNode(RedBlackNode left, RedBlackNode right, RedBlackNode up, Integer integer, Color color) {
+        this.left = left;
+        this.right = right;
+        this.up = up;
+        this.integer = integer;
+        this.color = color;
+    }
 
-        public RedBlackNode(RedBlackNode list, Integer integer, PlaceOnList placeOnList) {
-            if (placeOnList==PlaceOnList.BEFORE) this.before = list;
-            else this.after = list;
-            this.integer = integer;
-        }
+    public RedBlackNode(Integer integer, Color color) {
+        this.integer = integer;
+        this.color = color;
+    }
 
-        public RedBlackNode(Integer integer) {
-            this.integer = integer;
-        }
+    public RedBlackNode(Integer integer) {
+        this.integer = integer;
+    }
 
-        public RedBlackNode getBefore() {
-            return before;
-        }
+    @Override
+    public RedBlackNode getLeft() {
+        return left;
+    }
 
-        public RedBlackNode getAfter() {
-            return after;
-        }
+    public void setLeft(RedBlackNode left) {
+        this.left = left;
+    }
 
-        public Integer getInteger() {
-            return integer;
-        }
+    @Override
+    public RedBlackNode getRight() {
+        return right;
+    }
 
-        @Override
-        public boolean equals(Object o) {
-            return this.integer == o;
-        }
+    @Override
+    public String getText() {
+        return integer.toString();
+    }
 
-        @Override
-        public int hashCode() {
-            return Integer.hashCode(integer);
-        }
+    public void setRight(RedBlackNode right) {
+        this.right = right;
+    }
 
-        public void setInteger(Integer integer) {
-            this.integer = integer;
-        }
+    public RedBlackNode getUp() {
+        return up;
+    }
 
-        public void setAfter(RedBlackNode after) {
+    public void setUp(RedBlackNode up) {
+        this.up = up;
+    }
 
-            this.after = after;
-        }
+    public Integer getInteger() {
+        return integer;
+    }
 
-        public void setBefore(RedBlackNode before) {
+    @Override
+    public boolean equals(Object o) {
+        return this.integer == o;
+    }
 
-            this.before = before;
-        }
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(integer);
+    }
+
+    public void setInteger(Integer integer) {
+        this.integer = integer;
+    }
+
 
     public Color getColor() {
         return color;
     }
 
+    @Override
+    public String getColorString() {
+        return color == Color.BLACK ? "B" : "R";
+    }
+
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    public void changeColor() {
+        if (color == Color.BLACK) color = Color.RED;
+        else color = Color.BLACK;
     }
 }
 

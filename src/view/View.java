@@ -24,8 +24,8 @@ public class View {
     private Table table = new Table();
     private BidirectionalList bidirectionalList = new BidirectionalList();
     private BinaryHeap binaryHeap = new BinaryHeap();
-    private BstTree bstTree_ = new BstTree();
-    private RedBlackTree redBlackTree = new RedBlackTree();
+    private BstTree bstTree = new BstTree();
+    private RedBlackTree1 redBlackTree = new RedBlackTree1();
     private Results results = new Results();
 
     public View() {
@@ -60,6 +60,9 @@ public class View {
         if (error) System.err.println(message + "\n");
         if (!error) System.out.println(message + "\n");
     }
+    public static void printOnConsole(String string){
+        System.out.print(string);
+    }
 
     private void selectFromStartMenu(Integer selected) {
         if (selected.equals(1)) selectTask(Task.TABLE);
@@ -82,7 +85,7 @@ public class View {
         if (task == Task.TABLE) structure = table;
         else if (task == Task.LIST) structure = bidirectionalList;
         else if (task == Task.HEAP) structure = binaryHeap;
-        else if (task == Task.TREE_BST) structure = bstTree_;
+        else if (task == Task.TREE_BST) structure = bstTree;
         else structure = redBlackTree;
         do {
             message(Messages.messageTask(), false);
@@ -117,7 +120,7 @@ public class View {
                     message(structure.show(), false);
                     break;
                 case 6:
-                    structure.show();
+                    message(structure.show(),false);
                     break;
                 case 7:
                     results.clear();
@@ -127,8 +130,6 @@ public class View {
                 case 0:
                     kill = true;
                     break;
-                default:
-                    View.message("Wybierz odpowiedni numer!", true);
             }
         } while (!kill);
     }
@@ -145,7 +146,7 @@ public class View {
         FileChooser fileChooser = new FileChooser();
         try (Stream<String> stream = Files.lines(Paths.get(fileChooser.getPath()))) {
             ArrayList<String> arrayList = new ArrayList<>();
-            stream.forEach(arrayList::add);
+            stream.filter(x->!x.equals("")).forEach(arrayList::add);
             arrayList.remove(0);
             arrayList.forEach(x -> structure.add(Place.END, Integer.parseInt(x)));
         } catch (IOException e) {
