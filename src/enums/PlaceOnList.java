@@ -1,7 +1,8 @@
 package enums;
 
 /**
- * Created by Tobiasz Rumian on 30.03.2017.
+ * Miejsce wstawienia referencji.
+ * @author Tobiasz Rumian.
  */
 public enum PlaceOnList {
     BEFORE,AFTER

@@ -1,235 +1,156 @@
 package structures;
 
-/**
- * Created by Tobiasz Rumian on 20.03.2017.
- */
+import enums.Color;
+import enums.Place;
 
-public class RedBlackTree {
-//
-//        private RedBlackNode current;
-//        private RedBlackNode parent;
-//        private RedBlackNode grand;
-//        private RedBlackNode great;
-//        private RedBlackNode header;
-//        private static RedBlackNode nullNode;
-//        static {
-//            nullNode = new RedBlackNode(nullNode, nullNode, 0);
-//        }
-//
-//        /* Constructor */
-//    public RedBlackTree() {
-//        header = new RedBlackNode(nullNode, nullNode, null);
-//    }
-//
-//    /* Function to check if tree is empty */
-//    public boolean isEmpty() {
-//        return header.getAfter() == nullNode;
-//    }
-//
-//    /* Make the tree logically empty */
-//    public void makeEmpty() {
-//        header.setAfter(nullNode);
-//    }
-//
-//    private void handleReorient(int item) {
-//        // Do the color flip
-//        current.setColor(Color.RED);
-//        current.getBefore().setColor(Color.BLACK);
-//        current.getAfter().setColor(Color.BLACK);
-//
-//        if (parent.getColor() == Color.RED) {
-//            // Have to rotate
-//            grand.setColor(Color.RED);
-//            if (item < grand.getInteger() != item < parent.getInteger())
-//                parent = rotate(item, grand);  // Start dbl rotate
-//            current = rotate(item, great);
-//            current.setColor(Color.BLACK);
-//        }
-//        // Make root black
-//        header.getAfter().setColor(Color.BLACK);
-//    }
-//
-//    private RedBlackNode rotate(int item, RedBlackNode parent) {
-//        RedBlackNode node;
-//        if (item < parent.getInteger()) {
-//            if (item < parent.getBefore().getInteger()) node = rotateWithLeftChild(parent.getBefore());
-//            else node = rotateWithRightChild(parent.getBefore());
-//            parent.setBefore(node);
-//            return parent.getBefore();
-//        }else{
-//            if(item < parent.getAfter().getInteger())node=rotateWithLeftChild(parent.getAfter());
-//            else node=rotateWithRightChild(parent.getAfter());
-//            parent.setAfter(node);
-//            return parent.getAfter();
-//        }
-//    }
-//
-//    /* Rotate binary tree node with left child */
-//    private RedBlackNode rotateWithLeftChild(RedBlackNode k2) {
-//        RedBlackNode k1 = k2.getBefore();
-//        k2.setBefore(k1.getAfter());
-//        k1.setAfter(k2);
-//        return k1;
-//    }
-//
-//    /* Rotate binary tree node with right child */
-//    private RedBlackNode rotateWithRightChild(RedBlackNode k1) {
-//        RedBlackNode k2 = k1.getAfter();
-//        k1.setAfter(k2.getBefore());
-//        k2.setBefore(k1);
-//        return k2;
-//    }
-//
-//    /* Functions to count number of nodes */
-//    public int countNodes() {
-//        return countNodes(header.getAfter());
-//    }
-//
-//    private int countNodes(RedBlackNode r) {
-//        if (r == nullNode)
-//            return 0;
-//        else {
-//            int l = 1;
-//            l += countNodes(r.getBefore());
-//            l += countNodes(r.getAfter());
-//            return l;
-//        }
-//    }
-//
-//    /* Functions to search for an element */
-//    public boolean search(int val) {
-//        return search(header.getAfter(), val);
-//    }
-//
-//    private boolean search(RedBlackNode r, int val) {
-//        boolean found = false;
-//        while ((r != nullNode) && !found) {
-//            int rval = r.getInteger();
-//            if (val < rval)
-//                r = r.getBefore();
-//            else if (val > rval)
-//                r = r.getAfter();
-//            else {
-//                found = true;
-//                break;
-//            }
-//            found = search(r, val);
-//        }
-//        return found;
-//    }
-//
-//    /* Function for inorder traversal */
-//    public void inorder() {
-//        inorder(header.getAfter());
-//    }
-//
-//    private void inorder(RedBlackNode r) {
-//        if (r != nullNode) {
-//            inorder(r.getBefore());
-//            char c = 'B';
-//            if (r.getColor() == Color.RED)
-//                c = 'R';
-//            System.out.print(r.getInteger() + "" + c + " ");
-//            inorder(r.getAfter());
-//        }
-//    }
-//
-//    /* Function for preorder traversal */
-//    public void preorder() {
-//        preorder(header.getAfter());
-//    }
-//
-//    private void preorder(RedBlackNode r) {
-//        if (r != nullNode) {
-//            char c = 'B';
-//            if (r.getColor() == Color.RED)
-//                c = 'R';
-//            System.out.print(r.getInteger() + "" + c + " ");
-//            preorder(r.getBefore());
-//            preorder(r.getAfter());
-//        }
-//    }
-//
-//    /* Function for postorder traversal */
-//    public void postorder() {
-//        postorder(header.getAfter());
-//    }
-//
-//    private void postorder(RedBlackNode r) {
-//        if (r != nullNode) {
-//            postorder(r.getBefore());
-//            postorder(r.getAfter());
-//            char c = 'B';
-//            if (r.getColor() == Color.RED)
-//                c = 'R';
-//            System.out.print(r.getInteger() + "" + c + " ");
-//        }
-//    }
-//
-//    @Override
-//    public String info() {
-//        return null;
-//    }
-//
-//    @Override
-//    public void subtract(Place place, Integer number) throws IllegalArgumentException, IndexOutOfBoundsException {
-//
-//    }
-//
-//    @Override
-//    public void add(Place place, Integer number) throws IllegalArgumentException {
-//        current = parent = grand = header;
-//        nullNode.setInteger(number);
-//        while (current.getInteger() != number) {
-//            great = grand;
-//            grand = parent;
-//            parent = current;
-//            current = number < current.getInteger() ? current.getBefore() : current.getAfter();
-//            // Check if two red children and fix if so
-//            if (current.getBefore().getColor() == Color.RED && current.getAfter().getColor() == Color.RED)
-//                handleReorient(number);
-//        }
-//        // Insertion fails if already present
-//        if (current != nullNode)
-//            return;
-//        current = new RedBlackNode( nullNode, nullNode,number);
-//        // Attach to parent
-//        if (number < parent.getInteger())
-//            parent.setBefore(current);
-//        else
-//            parent.setAfter(current);
-//        handleReorient(number);
-//    }
-//
-//    @Override
-//    public Integer find(Integer find) {
-//        return search(header.getAfter(), find)?1:-1;
-//    }
-//
-//    @Override
-//    public String show() {
-//        StringBuilder sb=new StringBuilder();
-//        RedBlackNode list = header;
-//        while(list.getAfter()!=null){
-//            sb.append("[").append(list.getInteger()).append("]");
-//            list=list.getAfter();
-//        }
-//        return sb.toString();
-//    }
-//    @Override
-//    public String toString(){
-//        return "Drzewo czerwono czarne";
-//    }
-//
-//    @Override
-//    public Integer size() {
-//        return null;
-//        //TODO: Wpaść jak to zrobić
-//    }
-//
-//    @Override
-//    public void clear() {
-//        header=null;
-//    }
-//
+/**
+ * Created by Tobiasz Rumian on 11.04.2017.
+ */
+public class RedBlackTree implements Structure {
+    private RedBlackNode root;
+    private RedBlackNode nil = new RedBlackNode(null);
+    private Integer size = 0;
+
+    @Override
+    public String info() {
+        return null;
+    }
+
+    @Override
+    public void subtract(Place place, Integer number) throws IllegalArgumentException, IndexOutOfBoundsException {
+//TODO: dodać możliwość usuwania
+    }
+
+    @Override
+    public void add(Place place, Integer number) throws IllegalArgumentException {
+        size++;
+
+        RedBlackNode newNode = new RedBlackNode(number);
+        newNode.setLeft(null);
+        newNode.setRight(null);
+        size++;
+        if (root == null) {
+            newNode.setColor(Color.BLACK);
+            root = newNode;
+            return;
+        }
+        RedBlackNode current = root;
+        RedBlackNode parent;
+        while (true) {
+            parent = current;
+            if (number < current.getInteger()) {
+                current = current.getLeft();
+                if (current == null) {
+                    parent.setLeft(newNode);
+                    newNode.setUp(parent);
+                    correct(newNode);
+                    return;
+                }
+            } else {
+                current = current.getRight();
+                if (current == null) {
+                    parent.setRight(newNode);
+                    newNode.setUp(parent);
+                    correct(newNode);
+                    return;
+                }
+            }
+        }
+    }
+
+    private void correct(RedBlackNode newNode){
+        if (newNode.getUp().getColor() == Color.BLACK) return;
+        if (newNode.getUp().getUp().getRight().getColor() == Color.RED) {
+            newNode.getUp().getUp().getRight().setColor(Color.BLACK);
+            newNode.getUp().setColor(Color.BLACK);
+            if (!newNode.getUp().getUp().equals(root)) newNode.getUp().getUp().setColor(Color.RED);
+            return;
+        }
+        if (newNode.getUp().getUp().getLeft().getColor() == Color.RED) {
+            newNode.getUp().getUp().getLeft().setColor(Color.BLACK);
+            newNode.getUp().setColor(Color.BLACK);
+            if (!newNode.getUp().getUp().equals(root)) newNode.getUp().getUp().setColor(Color.RED);
+            return;
+        }
+        if (newNode.getUp().getUp().getRight().getColor() == Color.BLACK && newNode.equals(newNode.getUp().getRight())) {
+            rotateLeft(newNode);
+            newNode.getUp().changeColor();
+            newNode.changeColor();
+            rotateRight(newNode);
+        }
+        else if (newNode.getUp().getUp().getLeft().getColor() == Color.BLACK && newNode.equals(newNode.getUp().getLeft())) {
+            rotateRight(newNode);
+            newNode.getUp().changeColor();
+            newNode.changeColor();
+            rotateRight(newNode);
+        }
+        if (newNode.getUp().getUp().getRight().getColor() == Color.BLACK && newNode.equals(newNode.getUp().getLeft())) {
+            newNode.getUp().changeColor();
+            newNode.changeColor();
+            rotateRight(newNode);
+        }
+    }
+
+    @Override
+    public boolean find(Integer find) {
+        return false;
+    }
+
+    @Override
+    public String show() {
+        //return TreePrinter.print(root);
+        printRBT("","",root);
+        return "";
+    }
+
+    private void printRBT(String sp, String sn, RedBlackNode p)
+    {
+        String cr = "┌─",cl= "└─", cp= "│ ";
+        String t="";
+        if(p != null)
+        {
+            t = sp;
+            if(sn.equals(cr)) t=t.replace(t.charAt(t.length() - 2),' ');
+            printRBT(t+cp,cr,p.getRight());
+            //t = t.substring(0,sp.length()-2);
+            System.out.println(t+sn+p.getColorString()+":"+p.getInteger());
+            t = sp;
+            if(sn.equals(cl)) t=t.replace(t.charAt(t.length() - 2),' ');
+            printRBT(t+cp,cl,p.getLeft());
+        }
+    }
+
+    @Override
+    public Integer size() {
+        return size;
+    }
+
+    @Override
+    public void clear() {
+        root=null;
+    }
+
+    private RedBlackNode rotateRight(RedBlackNode node) {
+        RedBlackNode parent = node.getUp();
+        RedBlackNode grandParent= node.getUp().getUp();
+        if(parent.equals(grandParent.getLeft()))grandParent.setLeft(node);
+        if(parent.equals(grandParent.getRight()))grandParent.setRight(node);
+        node.setUp(grandParent);
+        parent.setLeft(node.getRight());
+        node.setRight(parent);
+        parent.setUp(node);
+        return parent;
+    }
+
+    private RedBlackNode rotateLeft(RedBlackNode node) {
+        RedBlackNode parent = node.getUp();
+        RedBlackNode grandParent= node.getUp().getUp();
+        if(parent.equals(grandParent.getLeft()))grandParent.setLeft(node);
+        if(parent.equals(grandParent.getRight()))grandParent.setRight(node);
+        node.setUp(grandParent);
+        parent.setRight(node.getLeft());
+        node.setLeft(parent);
+        parent.setUp(node);
+        return parent;
+    }
 }

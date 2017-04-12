@@ -1,16 +1,24 @@
 package addons;
 
 /**
- * Created by Tobiasz Rumian on 10.04.2017.
+ * Klasa pozwalająca na śledzenie czasu w milisekundach.
+ * @author Tobiasz Rumian
  */
-public class TimeTracker{
+class TimeTracker{
     private Long startTime;
 
-    public void start(){
+    /**
+     * Funkcja rozpoczynająca odliczanie czasu czasu.
+     */
+    void start(){
         startTime=System.nanoTime();
     }
 
-    public Long getElapsedTime(){
+    /**
+     * Funkcja podająca różnice między czasem w danej chwili, a czasem startowym.
+     * @return Zwraca różnicę  czasów.
+     */
+    Long getElapsedTime(){
         return System.nanoTime()-startTime;
     }
 }

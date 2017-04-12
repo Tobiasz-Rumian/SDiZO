@@ -7,19 +7,19 @@ import enums.PlaceOnList;
  * Created by Tobiasz Rumian on 30.03.2017.
  */
 public class Node implements PrintableNode {
-    private Node before = null;
-    private Node after = null;
+    private Node left = null;
+    private Node right = null;
     private Integer integer = null;
 
-    public Node(Node before, Node after, Integer integer) {
-        this.before = before;
-        this.after = after;
+    public Node(Node left, Node right, Integer integer) {
+        this.left = left;
+        this.right = right;
         this.integer = integer;
     }
 
     public Node(Node list, Integer integer, PlaceOnList placeOnList) {
-        if (placeOnList==PlaceOnList.BEFORE) this.before = list;
-        else this.after = list;
+        if (placeOnList==PlaceOnList.BEFORE) this.left = list;
+        else this.right = list;
         this.integer = integer;
     }
 
@@ -27,12 +27,24 @@ public class Node implements PrintableNode {
         this.integer = integer;
     }
 
-    public Node getBefore() {
-        return before;
+    @Override
+    public PrintableNode getLeft() {
+        return left;
     }
 
-    public Node getAfter() {
-        return after;
+    @Override
+    public PrintableNode getRight() {
+        return right;
+    }
+
+
+    public Node getLeftN() {
+        return left;
+    }
+
+
+    public Node getRightN() {
+        return right;
     }
 
     public Integer getInteger() {
@@ -53,24 +65,12 @@ public class Node implements PrintableNode {
         this.integer = integer;
     }
 
-    public void setAfter(Node after) {
-
-        this.after = after;
+    public void setRight(Node right) {
+        this.right = right;
     }
 
-    public void setBefore(Node before) {
-
-        this.before = before;
-    }
-
-    @Override
-    public PrintableNode getLeft() {
-        return before;
-    }
-
-    @Override
-    public PrintableNode getRight() {
-        return after;
+    public void setLeft(Node left) {
+        this.left = left;
     }
 
     @Override

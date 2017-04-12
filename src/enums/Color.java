@@ -1,7 +1,8 @@
 package enums;
 
 /**
- * Created by Tobiasz Rumian on 04.04.2017.
+ * Kolor rekordu
+ * @author Tobiasz Rumian.
  */
 public enum Color {
     RED,BLACK

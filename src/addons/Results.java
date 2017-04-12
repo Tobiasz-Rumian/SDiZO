@@ -6,18 +6,33 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Tobiasz Rumian on 10.04.2017.
+ * Wyniki
+ * @author Tobiasz Rumian
  */
-public class Results {
+class Results {
     private Map<String,Long> results = new HashMap<>();
-    public void add(String label, Long value){
+
+    /**
+     * Funkcja dodająca wynik do mapy.
+     * @param label Opis wyniku.
+     * @param value Wartość wyniku.
+     */
+    void add(String label, Long value){
         if(results.containsKey(label)) results.replace(label,value);
         results.put(label,value);
     }
-    public void clear(){
+
+    /**
+     * Funkcja czyszcząca wyniki.
+     */
+    void clear(){
         results.clear();
     }
-    public void save(){
+
+    /**
+     * Funkcja pozwalająca na zapis wyników do pliku
+     */
+    void save(){
         try (PrintStream out = new PrintStream(new FileOutputStream("results.txt"))) {
             StringBuilder stringBuilder = new StringBuilder();
             results.forEach((n,v)->stringBuilder.append(n).append("\t").append(v).append("\n"));
@@ -26,7 +41,12 @@ public class Results {
             e.getMessage();
         }
     }
-    public String show(){
+
+    /**
+     * Funkcja zwracająca wyniki w formie tekstu.
+     * @return Zwraca wyniki w formie tekstu.
+     */
+    String show(){
         StringBuilder stringBuilder = new StringBuilder();
         results.forEach((n,v)->stringBuilder.append(n).append("\t").append(v).append("\n"));
         return stringBuilder.toString();

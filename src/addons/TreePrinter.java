@@ -10,11 +10,11 @@ public class TreePrinter {
     /**
      * Print a tree
      *
-     * @param root
-     *            tree root node
+     * @param root tree root node
      */
-    public static void print(PrintableNode root)
+    public static String print(PrintableNode root)
     {
+        StringBuilder stringBuilder=new StringBuilder();
         List<List<String>> lines = new ArrayList<>();
 
         List<PrintableNode> level = new ArrayList<>();
@@ -77,25 +77,25 @@ public class TreePrinter {
                             if (j < line.size() && line.get(j) != null) c = '└';
                         }
                     }
-                    System.out.print(c);
+                    stringBuilder.append(c);
 
                     // lines and spaces
                     if (line.get(j) == null) {
                         for (int k = 0; k < perPiece - 1; k++) {
-                            System.out.print(" ");
+                            stringBuilder.append(" ");
                         }
                     } else {
 
                         for (int k = 0; k < hpw; k++) {
-                            System.out.print(j % 2 == 0 ? " " : "─");
+                            stringBuilder.append(j % 2 == 0 ? " " : "─");
                         }
-                        System.out.print(j % 2 == 0 ? "┌" : "┐");
+                        stringBuilder.append(j % 2 == 0 ? "┌" : "┐");
                         for (int k = 0; k < hpw; k++) {
-                            System.out.print(j % 2 == 0 ? "─" : " ");
+                            stringBuilder.append(j % 2 == 0 ? "─" : " ");
                         }
                     }
                 }
-                System.out.println();
+                stringBuilder.append("\n");
             }
 
             // print line of numbers
@@ -107,16 +107,17 @@ public class TreePrinter {
 
                 // a number
                 for (int k = 0; k < gap1; k++) {
-                    System.out.print(" ");
+                    stringBuilder.append(" ");
                 }
-                System.out.print(f);
+                stringBuilder.append(f);
                 for (int k = 0; k < gap2; k++) {
-                    System.out.print(" ");
+                    stringBuilder.append(" ");
                 }
             }
-            System.out.println();
+            stringBuilder.append("\n");
 
             perPiece /= 2;
         }
+        return stringBuilder.toString();
     }
 }

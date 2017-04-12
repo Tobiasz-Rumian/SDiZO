@@ -1,28 +1,27 @@
 package addons;
 
-import view.View;
-
 /**
- * Created by Tobiasz Rumian on 10.04.2017.
+ * Klasa przechowująca wiadomości do wyświetlenia
+ * @author Tobiasz Rumian
  */
-public class Messages {
-    public static String messageStart() {
+class Messages {
+    static String messageStart() {
         return "Witaj " + System.getProperty("user.name") + "." + "\n" +
                 "Uruchomiles projekt nr 1 autorstwa Tobiasza Rumiana." + "\n" +
                 "Rozsiadz sie wygodnie i wybierz co chcesz zrobic.";
     }
 
-    public static String messageMainMenu() {
+    static String messageMainMenu() {
         return View.title("menu glowne") +
                 "1. Tablica\n" +
                 "2. Lista dwukierunkowa\n" +
                 "3. Kopiec binarny\n" +
                 "4. Drzewo BST\n" +
-                "5. Drzewo czerwono czarne\n" +
+                //"5. Drzewo czerwono czarne\n" +
                 "0. Wyjscie";
     }
 
-    public static String messageTask() {
+    static String messageTask() {
         return View.title("wybor zadania") +
                 "1. info" + "\n" +
                 "2. Wczytaj z pliku" + "\n" +
@@ -34,7 +33,7 @@ public class Messages {
                 "0. wyjscie";
     }
 
-    public static String messageTest() {
+    static String messageTest() {
         return View.title("test") +
                 "1. Generuj populację struktury\n" +
                 "2. Usun ze struktury\n" +

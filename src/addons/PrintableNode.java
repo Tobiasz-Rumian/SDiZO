@@ -1,8 +1,5 @@
 package addons;
 
-/**
- * Created by Tobiasz Rumian on 10.04.2017.
- */
 /** Node that can be printed */
 public interface PrintableNode {
     /** Get left child */

@@ -1,16 +1,17 @@
-package view;
+package addons;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 
 /**
- * Created by Tobiasz Rumian on 20.03.2017.
+ * Klasa wyświetlająca okno umożliwiające wybór pliku tekstowego.
+ * @author Tobiasz Rumian
  */
-public class FileChooser extends JFrame {
+class FileChooser extends JFrame {
     private String path;
 
-    public FileChooser() {
+    FileChooser() {
         JFileChooser chooser = new JFileChooser();
         chooser.setFileFilter(new FileNameExtensionFilter("Pliki tekstowe", "txt"));
         chooser.setCurrentDirectory(new File("."));
@@ -23,7 +24,7 @@ public class FileChooser extends JFrame {
         }
     }
 
-    public String getPath() {
+    String getPath() {
         return path;
     }
 }

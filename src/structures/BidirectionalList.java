@@ -2,47 +2,19 @@ package structures;
 
 import enums.Place;
 import enums.PlaceOnList;
-import view.View;
+import addons.View;
 
 import java.util.Objects;
 
 /**
- * Created by Tobiasz Rumian on 30.03.2017.
+ * Klasa reprezentująca listę dwukierunkową.
+ * Korzysta z interfejsu struktur.
+ *
+ * @author Tobiasz Rumian.
  */
 public class BidirectionalList implements Structure {
     private Node firstElement;
     private Node lastElement;
-
-    public Integer size() {
-        if (firstElement == null) return 0;
-        Integer size = 0;
-        Node list = firstElement;
-        do {
-            list = list.getAfter();
-            size++;
-        } while (list != null);
-        return size;
-    }
-
-    public Node get(Integer index){
-        if (firstElement == null) return null;
-        Integer counter=0;
-        Node list=firstElement;
-        while(!Objects.equals(counter, index)){
-            list=list.getAfter();
-            counter++;
-        }
-        return list;
-    }
-
-    public boolean isEmpty() {
-        return firstElement == null;
-    }
-
-    public void clear() {
-    firstElement=null;
-    lastElement=null;
-    }
 
     @Override
     public String info() {
@@ -55,80 +27,124 @@ public class BidirectionalList implements Structure {
     }
 
     @Override
-    public void subtract(Place place, Integer number) throws IndexOutOfBoundsException,IllegalArgumentException{
-        if(this.isEmpty())throw new IndexOutOfBoundsException("Lista jest pusta!");
-        if(firstElement.getAfter()==null) this.clear();
-
-        if(place==Place.START) {
-            firstElement.getAfter().setBefore(null);
-        }
-        else if(place==Place.END) {
-            lastElement.getBefore().setAfter(null);
-        }
-        else if(place==Place.RANDOM) {
-            Node list = get(View.getRandom(0,this.size()));
-            list.getBefore().setAfter(list.getAfter());
-            list.getAfter().setBefore(list.getBefore());
-        }
-        else {
-            throw new IllegalArgumentException("Podano nieprawidłowe miejsce!");
-        }
-    }
-
-    @Override
-    public void add(Place place, Integer number) throws IllegalArgumentException{
-        if(this.isEmpty()){
-            Node list=new Node(number);
-            firstElement=list;
-            lastElement=list;
-        }
-        if(place==Place.START) {
-            Node newList=new Node(firstElement,number, PlaceOnList.AFTER);
-            firstElement.setBefore(newList);
-            firstElement=newList;
-        }
-        else if(place==Place.END) {
-            Node newList=new Node(lastElement,number, PlaceOnList.BEFORE);
-            lastElement.setAfter(newList);
-            lastElement=newList;
-        }
-        else if(place==Place.RANDOM) {
-            Node list = get(View.getRandom(0,this.size()));
-            Node newList = new Node(list.getBefore(),list,number);
-            list.getBefore().setAfter(newList);
-            list.setBefore(newList);
-        }
-        else {
-            throw new IllegalArgumentException("Podano nieprawidłowe miejsce!");
-        }
-    }
-
-    @Override
-    public Integer find(Integer find){
-        if(this.isEmpty()) return -1;
+    public Integer size() {
+        if (firstElement == null) return 0;
+        Integer size = 0;
         Node list = firstElement;
-        Integer counter=0;
-        while(!list.getInteger().equals(find)){
-            list=list.getAfter();
-            if(list==null) return -1;
-            counter++;
+        do {
+            list = list.getRightN();
+            size++;
+        } while (list != null);
+        return size;
+    }
+
+    @Override
+    public void clear() {
+        firstElement = null;
+        lastElement = null;
+    }
+
+    @Override
+    public void subtract(Place place, Integer number){
+        if (firstElement == null) return;
+        if (firstElement.getRightN() == null||lastElement.getLeftN()==null) this.clear();
+        switch (place) {
+            case START:
+                firstElement=firstElement.getRightN();
+                firstElement.setLeft(null);
+                break;
+            case END:
+                lastElement=lastElement.getLeftN();
+                lastElement.setRight(null);
+                break;
+            case RANDOM:
+                Node list = get(View.getRandom(0, this.size()));
+                if(list==firstElement){
+                    firstElement=firstElement.getRightN();
+                    firstElement.setLeft(null);
+                }else if(list==lastElement){
+                    lastElement=lastElement.getLeftN();
+                    lastElement.setRight(null);
+                }else{
+                    list.getLeftN().setRight(list.getRightN());
+                    list.getRightN().setLeft(list.getLeftN());
+                }
+
+                break;
         }
-        return counter;
+    }
+
+    @Override
+    public void add(Place place, Integer number){
+        if (firstElement == null) {
+            Node list = new Node(number);
+            firstElement = list;
+            lastElement = list;
+            return;
+        }
+        switch (place) {
+            case START: {
+                Node newList = new Node(firstElement, number, PlaceOnList.AFTER);
+                firstElement.setLeft(newList);
+                firstElement = newList;
+                break;
+            }
+            case END: {
+                Node newList = new Node(lastElement, number, PlaceOnList.BEFORE);
+                lastElement.setRight(newList);
+                lastElement = newList;
+                break;
+            }
+            case RANDOM: {
+                Node list = get(View.getRandom(0, this.size()));
+                Node newList = new Node(list.getLeftN(), list, number);
+                list.getLeftN().setRight(newList);
+                list.setLeft(newList);
+                break;
+            }
+        }
+    }
+
+    @Override
+    public boolean find(Integer find) {
+        if (firstElement == null) return false;
+        Node list = firstElement;
+        while (!list.getInteger().equals(find)) {
+            list = list.getRightN();
+            if (list == null) return false;
+        }
+        return true;
     }
 
     @Override
     public String show() {
-        StringBuilder sb=new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         Node list = firstElement;
-        while(list.getAfter()!=null){
+        while (list.getRightN() != null) {
             sb.append("[").append(list.getInteger()).append("]");
-            list=list.getAfter();
+            list = list.getRightN();
         }
-    return sb.toString();
+        return sb.toString();
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "Lista dwukierunkowa";
+    }
+
+
+    /**
+     * Funkcja pozwalająca zdobyć rekord pasujący do wartości.
+     * @param index Wartość szukanego rekordu.
+     * @return Zwraca szukany rekord.
+     */
+    private Node get(Integer index) {
+        Integer counter = 0;
+        Node list = firstElement;
+        while (!Objects.equals(counter, index)) {
+            list = list.getRightN();
+            counter++;
+        }
+        return list;
     }
 }

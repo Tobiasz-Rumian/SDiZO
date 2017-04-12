@@ -1,13 +1,16 @@
 package structures;
 
 import enums.Place;
-import view.View;
+import addons.View;
 
 /**
- * Created by Tobiasz Rumian on 19.03.2017.
+ * Klasa reprezentująca tablice.
+ * Korzysta z interfejsu struktur.
+ *
+ * @author Tobiasz Rumian.
  */
 public class Table implements Structure {
-    private Integer[] table = null;
+    private Integer[] table = null; //tablica.
 
     @Override
     public String info() {
@@ -17,81 +20,88 @@ public class Table implements Structure {
     }
 
     @Override
-    public void subtract(Place place, Integer number) throws IllegalArgumentException, IndexOutOfBoundsException {
-        if (table == null || table.length == 0) throw new IndexOutOfBoundsException("Tablica jest pusta!");
+    public void subtract(Place place, Integer number) {
+        if (table == null || table.length == 0) return;
         if (table.length == 1) {
             table = null;
             return;
         }
         Integer[] x = new Integer[table.length - 1];
-        if (place == Place.START) {
-            for (Integer i = 1; i < table.length; i++) x[i - 1] = table[i];
-        } else if (place == Place.END) {
-            for (Integer i = 0; i < table.length - 1; i++) x[i] = table[i];
-        } else if (place == Place.RANDOM) {
-            Integer random = View.getRandom(0, table.length);
-            for (int i = 0; i < random; i++) {
-                x[i] = table[i];
-            }
-            for (int i = random; i < x.length; i++) {
-                x[i] = table[i + 1];
-            }
-        } else throw new IllegalArgumentException("Podano nieprawidłowe miejsce!");
+        switch (place) {
+            case START:
+                for (Integer i = 1; i < table.length; i++) x[i - 1] = table[i];
+                break;
+            case END:
+                for (Integer i = 0; i < table.length - 1; i++) x[i] = table[i];
+                break;
+            case RANDOM:
+                Integer random = View.getRandom(0, table.length);
+                for (int i = 0; i < random; i++) {
+                    x[i] = table[i];
+                }
+                for (int i = random; i < x.length; i++) {
+                    x[i] = table[i + 1];
+                }
+                break;
+            default:
+                return;
+        }
         table = x;
     }
 
     @Override
-    public void add(Place place, Integer number) throws IllegalArgumentException {
+    public void add(Place place, Integer number) {
         if (table == null || table.length == 0) {
             table = new Integer[1];
             table[0] = number;
             return;
         }
         Integer[] x = new Integer[table.length + 1];
-        if (place == Place.START) {
-            for (Integer i = 0; i < table.length; i++) {
-                x[i + 1] = table[i];
-                x[0] = number;
-            }
-        } else if (place == Place.END) {
-            for (Integer i = 0; i < table.length; i++) {
-                x[i] = table[i];
-            }
-            x[x.length - 1] = number;
-        } else if (place == Place.RANDOM) {
-            Integer random = View.getRandom(0, table.length);
-            for (Integer i = 0; i < random; i++) {
-                x[i] = table[i];
-            }
-            x[random] = number;
-            for (Integer i = random + 1; i < x.length; i++) {
-                x[i] = table[i - 1];
-            }
-        } else throw new IllegalArgumentException("Podano nieprawidłowe miejsce!");
+        switch (place) {
+            case START:
+                for (Integer i = 0; i < table.length; i++) {
+                    x[i + 1] = table[i];
+                    x[0] = number;
+                }
+                break;
+            case END:
+                for (Integer i = 0; i < table.length; i++) {
+                    x[i] = table[i];
+                }
+                x[x.length - 1] = number;
+                break;
+            case RANDOM:
+                Integer random = View.getRandom(0, table.length);
+                for (Integer i = 0; i < random; i++) {
+                    x[i] = table[i];
+                }
+                x[random] = number;
+                for (Integer i = random + 1; i < x.length; i++) {
+                    x[i] = table[i - 1];
+                }
+                break;
+        }
         table = x;
     }
 
     @Override
-    public Integer find(Integer find){
-        if (table.length >= 1) {
-            for (Integer i = 0; i < table.length; i++) {
-                if (table[i].equals(find))return i;
-            }
-            return -1;
-        } else {
-            return -1;
-        }
+    public boolean find(Integer find) {
+        if (table.length > 0)
+            for (Integer aTable : table)
+                if (aTable.equals(find)) return true;
+        return false;
     }
 
     @Override
     public String show() {
-        if (table == null||table.length==0) return "Brak danych";
-        StringBuilder sb=new StringBuilder();
+        if (table == null || table.length == 0) return "Brak danych";
+        StringBuilder sb = new StringBuilder();
         for (Integer i : table) sb.append("[").append(i).append("]");
         return sb.toString();
     }
+
     @Override
-    public String toString(){
+    public String toString() {
         return "Tablica";
     }
 
@@ -102,6 +112,6 @@ public class Table implements Structure {
 
     @Override
     public void clear() {
-        table=null;
+        table = null;
     }
 }

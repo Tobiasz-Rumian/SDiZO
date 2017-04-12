@@ -1,7 +1,8 @@
 package enums;
 
 /**
- * Created by Tobiasz Rumian on 19.03.2017.
+ * Miejsce wstawienia rekordu.
+ * @author Tobiasz Rumian.
  */
 public enum Place {
     START,END,RANDOM
