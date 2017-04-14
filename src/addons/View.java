@@ -219,7 +219,7 @@ public class View {
                     structure.clear();
                 }
                 resultTime = resultTime.divide(BigDecimal.valueOf(Settings.getHowManyRepeats()), RoundingMode.UP);
-                label = structure.toString() + "\t" + "Dodawanie" + "\t" + Settings.getHowManyElements() + "\t" + Settings.getHowManyRepeats();
+                label = structure.toString() + "\t" + "Dodawanie" +"\t" + place.toString()+"\t" + Settings.getHowManyElements() + "\t" + Settings.getHowManyRepeats();
                 message(resultTime.toString(), false);
                 results.add(label, resultTime.longValue());
                 break;
@@ -245,7 +245,7 @@ public class View {
                     structure.clear();
                 }
                 resultTime = resultTime.divide(BigDecimal.valueOf(Settings.getHowManyRepeats()), RoundingMode.UP);
-                label = structure.toString() + "\t" + "Usuwanie" + "\t" + Settings.getHowManyElements() + "\t" + Settings.getHowManyRepeats();
+                label = structure.toString() + "\t" + "Usuwanie" +"\t" + place.toString()+ "\t" + Settings.getHowManyElements() + "\t" + Settings.getHowManyRepeats();
                 message(resultTime.toString(), false);
                 results.add(label, resultTime.longValue());
                 break;
@@ -344,7 +344,7 @@ public class View {
                     for (Place pl : p) {
                         for (int h : how) {
                             Settings.setSettings(h, 100);
-                            message(structure.toString() + "\n" + Settings.getHowManyElements(), false);
+                            message(structure.toString() + "\n" + Settings.getHowManyElements()+"\n"+pl.toString(), false);
                             test(i, pl);
                         }
                         results.save();

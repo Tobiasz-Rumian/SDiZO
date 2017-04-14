@@ -96,10 +96,22 @@ public class BidirectionalList implements Structure {
                 break;
             }
             case RANDOM: {
-                Node list = get(View.getRandom(0, this.size()));
-                Node newList = new Node(list.getLeftN(), list, number);
-                list.getLeftN().setRight(newList);
-                list.setLeft(newList);
+                int i=View.getRandom(0, this.size());
+                if(i==0){
+                    Node newList = new Node(firstElement, number, PlaceOnList.AFTER);
+                    firstElement.setLeft(newList);
+                    firstElement = newList;
+                }else if(i==size()){
+                    Node newList = new Node(lastElement, number, PlaceOnList.BEFORE);
+                    lastElement.setRight(newList);
+                    lastElement = newList;
+                }else{
+                    Node list = get(i);
+                    Node newList = new Node(list.getLeftN(), list, number);
+                    list.getLeftN().setRight(newList);
+                    list.setLeft(newList);
+                }
+
                 break;
             }
         }
