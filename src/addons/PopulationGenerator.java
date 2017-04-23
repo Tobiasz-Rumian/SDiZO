@@ -11,22 +11,22 @@ import static addons.Settings.getHowManyElements;
  * @author Tobiasz Rumian
  */
 public class PopulationGenerator {
-    private Integer[] population;
+    private int[] population;
     PopulationGenerator(){
-        population=new Integer[getHowManyElements()];
+        population=new int[getHowManyElements()];
         for(int i=0;i< getHowManyElements();i++){
             Random random = new Random();
             population[i]= random.nextInt();
         }
     }
-    Integer[] getPopulation(){
+    int[] getPopulation(){
         return population;
     }
 
     private void saveToFile(){
         try (PrintStream out = new PrintStream(new FileOutputStream("population.txt"))) {
             StringBuilder stringBuilder = new StringBuilder();
-            for (Integer aPopulation : population) stringBuilder.append(aPopulation).append("\n");
+            for (int aPopulation : population) stringBuilder.append(aPopulation).append("\n");
             out.print(stringBuilder.toString());
         }catch (Exception e){
             e.getMessage();

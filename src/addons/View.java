@@ -40,7 +40,7 @@ public class View {
                 case 4: structure = new BstTree();
                     break;
                 case 5: fullTest();
-                    break;
+                    return;
                 case 0: return;
             }
             selectTask();
@@ -102,17 +102,17 @@ public class View {
                     break;
                 case 2:
                     loadFromFile(structure);
-                    message(structure.show(),false);
+                    message(structure.show(), false);
                     break;
                 case 3:
                     View.message(View.title("odejmowanie"), false);
                     Integer number;
                     if (structure.getClass() == Table.class || structure.getClass() == BidirectionalList.class) {
                         place = choosePlace("Podaj liczbe miejsca z ktorego chcesz usunac");
-                        number = null;
-                    } else number = select("Podaj liczbe ktora chcesz usunąć",Integer.MIN_VALUE, Integer.MAX_VALUE);
+                        number = 0;
+                    } else number = select("Podaj liczbe ktora chcesz usunąć", Integer.MIN_VALUE, Integer.MAX_VALUE);
                     structure.subtract(place, number);
-                    message(structure.show(),false);
+                    message(structure.show(), false);
                     break;
                 case 4:
                     View.message(View.title("dodawanie"), false);
@@ -202,15 +202,21 @@ public class View {
             case 1:
                 //Dziesięć powtórzeń dla usprawnienia pamięci
                 for (int x = 0; x < Settings.howManyRepeatsBeforeStart; x++) {
-                    message(showProgress(x, Settings.howManyRepeatsBeforeStart), false);
-                        populationGenerator = new PopulationGenerator();
-                        for (int j = 0; j < Settings.getHowManyElements(); j++)
-                            structure.add(place, populationGenerator.getPopulation()[j]);
-                        structure.clear();
+                    message(showProgress(x, Settings.howManyRepeatsBeforeStart) + "     " +
+                            structure.toString() + "  " + Settings.getHowManyElements() + "  " +
+                            place.toString()+
+                            " rozgrzewka Dodawanie", false);
+                    populationGenerator = new PopulationGenerator();
+                    for (int j = 0; j < Settings.getHowManyElements(); j++)
+                        structure.add(place, populationGenerator.getPopulation()[j]);
+                    structure.clear();
                 }
                 //Oficjalny test
                 for (int i = 0; i < Settings.getHowManyRepeats(); i++) {
-                    message(showProgress(i, Settings.getHowManyRepeats()), false);
+                    message(showProgress(i, Settings.getHowManyRepeats()) + "     " +
+                            structure.toString() + "  " + Settings.getHowManyElements() + "  " +
+                            place.toString()+
+                            " Dodawanie", false);
                     populationGenerator = new PopulationGenerator();
                     tracker.start();
                     for (int j = 0; j < Settings.getHowManyElements(); j++)
@@ -219,51 +225,64 @@ public class View {
                     structure.clear();
                 }
                 resultTime = resultTime.divide(BigDecimal.valueOf(Settings.getHowManyRepeats()), RoundingMode.UP);
-                label = structure.toString() + "\t" + "Dodawanie" +"\t" + place.toString()+"\t" + Settings.getHowManyElements() + "\t" + Settings.getHowManyRepeats();
+                resultTime = resultTime.divide(BigDecimal.valueOf(Settings.getHowManyElements()), RoundingMode.UP);
+                label = structure.toString() + "\t" + "Dodawanie" + "\t" + place.toString() + "\t" + Settings.getHowManyElements() + "\t" + Settings.getHowManyRepeats();
                 message(resultTime.toString(), false);
                 results.add(label, resultTime.longValue());
                 break;
             case 2:
                 //Dziesięć powtórzeń dla usprawnienia pamięci
                 for (int x = 0; x < Settings.howManyRepeatsBeforeStart; x++) {
-                    message(showProgress(x, Settings.howManyRepeatsBeforeStart), false);
-                        populationGenerator = new PopulationGenerator();
-                        for (int k = 0; k < Settings.getHowManyElements(); k++)
-                            structure.add(Place.END, populationGenerator.getPopulation()[k]);
-                        for (int j = 0; j < structure.size(); j++) structure.subtract(place, null);
-                        structure.clear();
+                    message(showProgress(x, Settings.howManyRepeatsBeforeStart) + "     " +
+                            structure.toString() + "  " + Settings.getHowManyElements() + "  " +
+                            place.toString()+
+                            " rozgrzewka Odejmowanie", false);
+                    populationGenerator = new PopulationGenerator();
+                    for (int k = 0; k < Settings.getHowManyElements(); k++)
+                        structure.add(Place.END, populationGenerator.getPopulation()[k]);
+                    for (int j = 0; j < structure.size(); j++) structure.subtract(place, 0);
+                    structure.clear();
                 }
                 //Oficjalny test
                 for (int i = 0; i < Settings.getHowManyRepeats(); i++) {
-                    message(showProgress(i, Settings.getHowManyRepeats()), false);
+                    message(showProgress(i, Settings.getHowManyRepeats()) + "     " +
+                            structure.toString() + "  " + Settings.getHowManyElements() + "  " +
+                            place.toString()+
+                            " Odejmowanie", false);
                     populationGenerator = new PopulationGenerator();
                     for (int k = 0; k < Settings.getHowManyElements(); k++)
                         structure.add(Place.END, populationGenerator.getPopulation()[k]);
                     tracker.start();
-                    for (int j = 0; j < structure.size(); j++) structure.subtract(place, null);
+                    for (int j = 0; j < structure.size(); j++) structure.subtract(place, 0);
                     resultTime = resultTime.add(BigDecimal.valueOf(tracker.getElapsedTime()));
                     structure.clear();
                 }
                 resultTime = resultTime.divide(BigDecimal.valueOf(Settings.getHowManyRepeats()), RoundingMode.UP);
-                label = structure.toString() + "\t" + "Usuwanie" +"\t" + place.toString()+ "\t" + Settings.getHowManyElements() + "\t" + Settings.getHowManyRepeats();
+                resultTime = resultTime.divide(BigDecimal.valueOf(Settings.getHowManyElements()), RoundingMode.UP);
+                label = structure.toString() + "\t" + "Usuwanie" + "\t" + place.toString() + "\t" +
+                        Settings.getHowManyElements() + "\t" + Settings.getHowManyRepeats();
                 message(resultTime.toString(), false);
                 results.add(label, resultTime.longValue());
                 break;
             case 3:
                 //Dziesięć powtórzeń dla usprawnienia pamięci
                 for (int x = 0; x < Settings.howManyRepeatsBeforeStart; x++) {
-                    message(showProgress(x, Settings.howManyRepeatsBeforeStart), false);
-                        populationGenerator = new PopulationGenerator();
-                        for (int k = 0; k < Settings.getHowManyElements(); k++)
-                            structure.add(Place.END, populationGenerator.getPopulation()[k]);
-                        populationGenerator = new PopulationGenerator();
-                        for (int j = 0; j < Settings.getHowManyElements(); j++)
-                            structure.find(populationGenerator.getPopulation()[j]);
-                        structure.clear();
+                    message(showProgress(x, Settings.howManyRepeatsBeforeStart) + "     " +
+                            structure.toString() + "  " + Settings.getHowManyElements()+
+                            " rozgrzewka Wyszukiwanie", false);
+                    populationGenerator = new PopulationGenerator();
+                    for (int k = 0; k < Settings.getHowManyElements(); k++)
+                        structure.add(Place.END, populationGenerator.getPopulation()[k]);
+                    populationGenerator = new PopulationGenerator();
+                    for (int j = 0; j < Settings.getHowManyElements(); j++)
+                        structure.find(populationGenerator.getPopulation()[j]);
+                    structure.clear();
                 }
                 //Oficjalny test
                 for (int i = 0; i < Settings.getHowManyRepeats(); i++) {
-                    message(showProgress(i, Settings.getHowManyRepeats()), false);
+                    message(showProgress(i, Settings.getHowManyRepeats()) + "     " +
+                            structure.toString() + "  " + Settings.getHowManyElements()+
+                            " Wyszukiwanie", false);
                     populationGenerator = new PopulationGenerator();
                     for (int k = 0; k < Settings.getHowManyElements(); k++)
                         structure.add(Place.END, populationGenerator.getPopulation()[k]);
@@ -275,7 +294,9 @@ public class View {
                     structure.clear();
                 }
                 resultTime = resultTime.divide(BigDecimal.valueOf(Settings.getHowManyRepeats()), RoundingMode.UP);
-                label = structure.toString() + "\t" + "Wyszukiwanie" + "\t" + Settings.getHowManyElements() + "\t" + Settings.getHowManyRepeats();
+                resultTime = resultTime.divide(BigDecimal.valueOf(Settings.getHowManyElements()), RoundingMode.UP);
+                label = structure.toString() + "\t" + "Wyszukiwanie" + "\t" + "-" + "\t" +
+                        Settings.getHowManyElements() + "\t" + Settings.getHowManyRepeats();
                 message(resultTime.toString(), false);
                 results.add(label, resultTime.longValue());
                 break;
@@ -334,17 +355,16 @@ public class View {
      */
     private void fullTest() {
         int[] how = {1000, 2000, 4000, 8000, 16000};
-        Structure[] str = {new Table(), new BidirectionalList(), new BinaryHeap(), new BstTree()};
+        Structure[] str = {new BstTree()};//new Table(),new BidirectionalList(), new BinaryHeap(), new BstTree()
         Place[] p = {Place.START, Place.END, Place.RANDOM};
-        int[] t ={1,2,3};
+        int[] t = {1, 2, 3};
         for (Structure s : str) {
             structure = s;
-            for(int i:t){
+            for (int i : t) {
                 if (structure.getClass() == Table.class || structure.getClass() == BidirectionalList.class) {
                     for (Place pl : p) {
                         for (int h : how) {
                             Settings.setSettings(h, 100);
-                            message(structure.toString() + "\n" + Settings.getHowManyElements()+"\n"+pl.toString(), false);
                             test(i, pl);
                         }
                         results.save();
@@ -352,8 +372,7 @@ public class View {
                 } else {
                     for (int h : how) {
                         Settings.setSettings(h, 100);
-                        message(structure.toString() + "\n" + Settings.getHowManyElements(), false);
-                        test(i, null);
+                        test(i, Place.END);
                     }
                     results.save();
                 }

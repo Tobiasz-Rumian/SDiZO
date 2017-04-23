@@ -9,7 +9,7 @@ import enums.Place;
 public class RedBlackTree implements Structure {
     private RedBlackNode root;
     private RedBlackNode nil = new RedBlackNode(null);
-    private Integer size = 0;
+    private int size = 0;
 
     @Override
     public String info() {
@@ -17,12 +17,12 @@ public class RedBlackTree implements Structure {
     }
 
     @Override
-    public void subtract(Place place, Integer number) throws IllegalArgumentException, IndexOutOfBoundsException {
+    public void subtract(Place place, int number) throws IllegalArgumentException, IndexOutOfBoundsException {
 //TODO: dodać możliwość usuwania
     }
 
     @Override
-    public void add(Place place, Integer number) throws IllegalArgumentException {
+    public void add(Place place, int number) throws IllegalArgumentException {
         size++;
 
         RedBlackNode newNode = new RedBlackNode(number);
@@ -92,7 +92,7 @@ public class RedBlackTree implements Structure {
     }
 
     @Override
-    public boolean find(Integer find) {
+    public boolean find(int find) {
         return false;
     }
 
@@ -121,7 +121,7 @@ public class RedBlackTree implements Structure {
     }
 
     @Override
-    public Integer size() {
+    public int size() {
         return size;
     }
 

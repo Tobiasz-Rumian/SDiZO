@@ -10,7 +10,7 @@ import enums.Place;
  */
 public class BstTree implements Structure {
     private static Node root; //Korzeń drzewa.
-    private Integer size = 0; //Ilość elementów w drzewie.
+    private int size = 0; //Ilość elementów w drzewie.
 
     public BstTree() {
         root = null;
@@ -26,13 +26,13 @@ public class BstTree implements Structure {
     }
 
     @Override
-    public void subtract(Place place, Integer number) throws IllegalArgumentException, IndexOutOfBoundsException {
+    public void subtract(Place place, int number) throws IllegalArgumentException, IndexOutOfBoundsException {
         size--;
         Node parent = root;
         Node current = root;
         //Algorytm wyszukiwania w drzewie
         boolean isLeftChild = false;
-        while (!current.getInteger().equals(number)) {
+        while (current.getInteger()!=number) {
             parent = current;
             if (current.getLeftN() == null && current.getRightN() == null)
                 return;//Jeżeli nie znaleziono węzła, zakończ funkcję.
@@ -76,7 +76,7 @@ public class BstTree implements Structure {
     }
 
     @Override
-    public void add(Place place, Integer number) throws IllegalArgumentException {
+    public void add(Place place, int number) throws IllegalArgumentException {
         Node newNode = new Node(number);
         newNode.setLeft(null);
         newNode.setRight(null);
@@ -108,10 +108,10 @@ public class BstTree implements Structure {
     }
 
     @Override
-    public boolean find(Integer find) {
+    public boolean find(int find) {
         Node current = root;
         while (current != null) {
-            if (current.getInteger().equals(find)) return true;
+            if (current.getInteger()==find) return true;
             else if (current.getInteger() > find) current = current.getRightN();
             else current = current.getLeftN();
         }
@@ -129,7 +129,7 @@ public class BstTree implements Structure {
     }
 
     @Override
-    public Integer size() {
+    public int size() {
         return size;
     }
 
@@ -167,7 +167,6 @@ public class BstTree implements Structure {
      */
     private void DSW() {
         if (root != null) {
-            // effectively: createBackbone( root)
             Node grandParent = null;
             Node parent = root;
             Node leftChild;
@@ -182,7 +181,6 @@ public class BstTree implements Structure {
                     parent = parent.getRightN();
                 }
             }
-            //effectively: createPerfectBST( root)
             int n = 0;
             for (Node tmp = root; tmp != null; tmp = tmp.getRightN()) n++;
             int m = (1 << MSB(n + 1)) - 1;//Największa potęga dwójki, mniejsza niż n;
@@ -256,5 +254,17 @@ public class BstTree implements Structure {
         leftChild.setRight(parent);
         return grandParent;
     }
+
+    private Node rotateRight(Node node) {
+        return null;
+    }
+
+
+    private void DSW1(){
+        Node node = root;
+        while(node.getRightN()!=null) rotateRight(null,null,root.getLeftN());
+    }
+
+
 }
 

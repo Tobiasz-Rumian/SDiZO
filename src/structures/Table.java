@@ -10,7 +10,7 @@ import addons.View;
  * @author Tobiasz Rumian.
  */
 public class Table implements Structure {
-    private Integer[] table = null; //tablica.
+    private int[] table = null; //tablica.
 
     @Override
     public String info() {
@@ -20,28 +20,24 @@ public class Table implements Structure {
     }
 
     @Override
-    public void subtract(Place place, Integer number) {
+    public void subtract(Place place, int number) {
         if (table == null || table.length == 0) return;
         if (table.length == 1) {
             table = null;
             return;
         }
-        Integer[] x = new Integer[table.length - 1];
+        int[] x = new int[table.length - 1];
         switch (place) {
             case START:
-                for (Integer i = 1; i < table.length; i++) x[i - 1] = table[i];
+                for (int i = 1; i < table.length; i++) x[i - 1] = table[i];
                 break;
             case END:
-                for (Integer i = 0; i < table.length - 1; i++) x[i] = table[i];
+                for (int i = 0; i < table.length - 1; i++) x[i] = table[i];
                 break;
             case RANDOM:
-                Integer random = View.getRandom(0, table.length);
-                for (int i = 0; i < random; i++) {
-                    x[i] = table[i];
-                }
-                for (int i = random; i < x.length; i++) {
-                    x[i] = table[i + 1];
-                }
+                int random = View.getRandom(0, table.length);
+                for (int i = 0; i < random; i++) x[i] = table[i];
+                for (int i = random; i < x.length; i++) x[i] = table[i + 1];
                 break;
             default:
                 return;
@@ -50,45 +46,37 @@ public class Table implements Structure {
     }
 
     @Override
-    public void add(Place place, Integer number) {
+    public void add(Place place, int number) {
         if (table == null || table.length == 0) {
-            table = new Integer[1];
+            table = new int[1];
             table[0] = number;
             return;
         }
-        Integer[] x = new Integer[table.length + 1];
+        int[] x = new int[table.length + 1];
         switch (place) {
             case START:
-                for (Integer i = 0; i < table.length; i++) {
-                    x[i + 1] = table[i];
-                    x[0] = number;
-                }
+                for (int i = 0; i < table.length; i++) x[i + 1] = table[i];
+                x[0] = number;
                 break;
             case END:
-                for (Integer i = 0; i < table.length; i++) {
-                    x[i] = table[i];
-                }
+                for (int i = 0; i < table.length; i++) x[i] = table[i];
                 x[x.length - 1] = number;
                 break;
             case RANDOM:
-                Integer random = View.getRandom(0, table.length);
-                for (Integer i = 0; i < random; i++) {
-                    x[i] = table[i];
-                }
+                int random = View.getRandom(0, table.length);
+                for (int i = 0; i < random; i++) x[i] = table[i];
                 x[random] = number;
-                for (Integer i = random + 1; i < x.length; i++) {
-                    x[i] = table[i - 1];
-                }
+                for (int i = random + 1; i < x.length; i++) x[i] = table[i - 1];
                 break;
         }
         table = x;
     }
 
     @Override
-    public boolean find(Integer find) {
+    public boolean find(int find) {
         if (table.length > 0)
-            for (Integer aTable : table)
-                if (aTable.equals(find)) return true;
+            for (int t : table)
+                if (t == find) return true;
         return false;
     }
 
@@ -96,7 +84,7 @@ public class Table implements Structure {
     public String show() {
         if (table == null || table.length == 0) return "Brak danych";
         StringBuilder sb = new StringBuilder();
-        for (Integer i : table) sb.append("[").append(i).append("]");
+        for (int i : table) sb.append("[").append(i).append("]");
         return sb.toString();
     }
 
@@ -106,7 +94,7 @@ public class Table implements Structure {
     }
 
     @Override
-    public Integer size() {
+    public int size() {
         return table.length;
     }
 

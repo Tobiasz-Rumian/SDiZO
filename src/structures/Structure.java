@@ -21,7 +21,7 @@ public interface Structure {
      * @param place Miejsce, z którego ma być usunięty rekord.
      * @param number Wartość rekordu, który ma być usunięty.
      */
-    void subtract(Place place,Integer number);
+    void subtract(Place place,int number);
 
     /**
      * Funkcja pozwalająca dodać element do struktury.
@@ -31,14 +31,14 @@ public interface Structure {
      * @param place Miejsce, w które ma być wstawiony rekord.
      * @param number Wartość rekordu, który ma być wstawiony
      */
-    void add(Place place, Integer number);
+    void add(Place place, int number);
 
     /**
      * Funkcja pozwalająca na sprawdzenie, czy dany element jest w strukturze.
      * @param find Wartość szukanego elementu.
      * @return Zwraca wartość logiczną zapytania o istnienie elementu.
      */
-    boolean find(Integer find);
+    boolean find(int find);
 
     /**
      * Funkcja zwracająca reprezentację graficzną struktury w postaci String'a
@@ -56,7 +56,7 @@ public interface Structure {
      * Funkcja zwracająca liczbę elementów w strukturze.
      * @return Zwraca liczbę elementów w strukturze.
      */
-    Integer size();
+    int size();
 
     /**
      * Funkcja pozwalająca na wyczyszczenie struktury.

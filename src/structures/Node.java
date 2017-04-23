@@ -9,21 +9,21 @@ import enums.PlaceOnList;
 public class Node implements PrintableNode {
     private Node left = null;
     private Node right = null;
-    private Integer integer = null;
+    private int integer = 0;
 
-    public Node(Node left, Node right, Integer integer) {
+    public Node(Node left, Node right, int integer) {
         this.left = left;
         this.right = right;
         this.integer = integer;
     }
 
-    public Node(Node list, Integer integer, PlaceOnList placeOnList) {
-        if (placeOnList==PlaceOnList.BEFORE) this.left = list;
+    public Node(Node list, int integer, PlaceOnList placeOnList) {
+        if (placeOnList == PlaceOnList.BEFORE) this.left = list;
         else this.right = list;
         this.integer = integer;
     }
 
-    public Node(Integer integer) {
+    public Node(int integer) {
         this.integer = integer;
     }
 
@@ -47,13 +47,13 @@ public class Node implements PrintableNode {
         return right;
     }
 
-    public Integer getInteger() {
+    public int getInteger() {
         return integer;
     }
 
     @Override
     public boolean equals(Object o) {
-        return this.integer == o;
+        return integer == (int)o;
     }
 
     @Override
@@ -61,7 +61,7 @@ public class Node implements PrintableNode {
         return Integer.hashCode(integer);
     }
 
-    public void setInteger(Integer integer) {
+    public void setInteger(int integer) {
         this.integer = integer;
     }
 
@@ -75,7 +75,7 @@ public class Node implements PrintableNode {
 
     @Override
     public String getText() {
-        return integer.toString();
+        return Integer.toString(integer);
     }
 
     @Override

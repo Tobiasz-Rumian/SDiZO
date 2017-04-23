@@ -10,7 +10,7 @@ public class RedBlackNode implements PrintableNode {
     private RedBlackNode left = null;
     private RedBlackNode right = null;
     private RedBlackNode up = null;
-    private Integer integer = null;
+    private Integer integer = 0;
     private Color color = null;
 
     public RedBlackNode(RedBlackNode left, RedBlackNode right, RedBlackNode up, Integer integer, Color color) {
@@ -25,6 +25,7 @@ public class RedBlackNode implements PrintableNode {
         this.integer = integer;
         this.color = color;
     }
+
 
     public RedBlackNode(Integer integer) {
         this.integer = integer;
@@ -46,7 +47,7 @@ public class RedBlackNode implements PrintableNode {
 
     @Override
     public String getText() {
-        return integer.toString();
+        return Integer.toString(integer);
     }
 
     public void setRight(RedBlackNode right) {
@@ -61,13 +62,13 @@ public class RedBlackNode implements PrintableNode {
         this.up = up;
     }
 
-    public Integer getInteger() {
+    public int getInteger() {
         return integer;
     }
 
     @Override
     public boolean equals(Object o) {
-        return this.integer == o;
+        return (Integer)integer == o;
     }
 
     @Override
@@ -75,7 +76,7 @@ public class RedBlackNode implements PrintableNode {
         return Integer.hashCode(integer);
     }
 
-    public void setInteger(Integer integer) {
+    public void setInteger(int integer) {
         this.integer = integer;
     }
 
