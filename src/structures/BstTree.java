@@ -27,16 +27,26 @@ public class BstTree implements Structure {
 
     @Override
     public void subtract(Place place, int number) throws IllegalArgumentException, IndexOutOfBoundsException {
-        size--;
+        if(size==0) return;
+        if(size==1){
+            clear();
+            return;
+        }
         Node parent = root;
         Node current = root;
         //Algorytm wyszukiwania w drzewie
         boolean isLeftChild = false;
+        size--;
         while (current.getInteger()!=number) {
             parent = current;
-            if (current.getLeftN() == null && current.getRightN() == null)
-                return;//Jeżeli nie znaleziono węzła, zakończ funkcję.
-            if (current.getInteger() > number) {//Jeżeli wartość current jest większa od szukanego numeru, należy szukać w lewej gałęzi.
+            if (current.getLeftN() == null && current.getRightN() == null) return;//Jeżeli nie znaleziono węzła, zakończ funkcję.
+            else if(current.getLeftN() == null){
+                current=current.getRightN();
+                isLeftChild = false;
+            } else if(current.getRightN()==null){
+                current=current.getLeftN();
+                isLeftChild = true;
+            } else if (current.getInteger() > number) {//Jeżeli wartość current jest większa od szukanego numeru, należy szukać w lewej gałęzi.
                 isLeftChild = true;
                 current = current.getLeftN();
             } else {
@@ -77,9 +87,7 @@ public class BstTree implements Structure {
 
     @Override
     public void add(Place place, int number) throws IllegalArgumentException {
-        Node newNode = new Node(number);
-        newNode.setLeft(null);
-        newNode.setRight(null);
+        Node newNode = new Node(null,null,number);
         size++;
         if (root == null) {
             root = newNode;
@@ -110,12 +118,14 @@ public class BstTree implements Structure {
     @Override
     public boolean find(int find) {
         Node current = root;
-        while (current != null) {
-            if (current.getInteger()==find) return true;
-            else if (current.getInteger() > find) current = current.getRightN();
-            else current = current.getLeftN();
+        while (current.getInteger()!=find) {
+            if (current.getLeftN() == null && current.getRightN() == null) return false;
+            else if(current.getLeftN() == null) current=current.getRightN();
+            else if(current.getRightN()==null) current=current.getLeftN();
+            else if (current.getInteger() > find) current = current.getLeftN(); //Jeżeli wartość current jest większa od szukanego numeru, należy szukać w lewej gałęzi.
+            else current = current.getRightN();
         }
-        return false;
+        return true;
     }
 
     @Override
@@ -136,6 +146,7 @@ public class BstTree implements Structure {
     @Override
     public void clear() {
         root = null;
+        size=0;
     }
 
     /**
@@ -181,10 +192,8 @@ public class BstTree implements Structure {
                     parent = parent.getRightN();
                 }
             }
-            int n = 0;
-            for (Node tmp = root; tmp != null; tmp = tmp.getRightN()) n++;
-            int m = (1 << MSB(n + 1)) - 1;//Największa potęga dwójki, mniejsza niż n;
-            makeRotations(n - m);
+            int m = (1 << MSB(size + 1)) - 1;//Największa potęga dwójki, mniejsza niż n;
+            makeRotations(size - m);
             while (m > 1) makeRotations(m /= 2);
         }
     }
@@ -254,17 +263,6 @@ public class BstTree implements Structure {
         leftChild.setRight(parent);
         return grandParent;
     }
-
-    private Node rotateRight(Node node) {
-        return null;
-    }
-
-
-    private void DSW1(){
-        Node node = root;
-        while(node.getRightN()!=null) rotateRight(null,null,root.getLeftN());
-    }
-
 
 }
 

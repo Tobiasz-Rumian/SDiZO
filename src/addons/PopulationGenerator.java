@@ -5,6 +5,7 @@ import java.io.PrintStream;
 import java.util.Random;
 
 import static addons.Settings.getHowManyElements;
+import static addons.Settings.getHowManyElementsBeforeStart;
 
 /**
  * Generator rekordów.
@@ -13,8 +14,8 @@ import static addons.Settings.getHowManyElements;
 public class PopulationGenerator {
     private int[] population;
     PopulationGenerator(){
-        population=new int[getHowManyElements()];
-        for(int i=0;i< getHowManyElements();i++){
+        population=new int[getHowManyElements()+getHowManyElementsBeforeStart()];
+        for(int i=0;i< getHowManyElements()+getHowManyElementsBeforeStart();i++){
             Random random = new Random();
             population[i]= random.nextInt();
         }

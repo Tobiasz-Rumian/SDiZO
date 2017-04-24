@@ -5,5 +5,5 @@ package enums;
  * @author Tobiasz Rumian.
  */
 public enum Place {
-    START,END,RANDOM
+    START,END,RANDOM,NULL
 }

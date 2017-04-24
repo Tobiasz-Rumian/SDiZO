@@ -117,6 +117,7 @@ public class BidirectionalList implements Structure {
         if (size==0) return false;
         Node node = firstElement;
         for(int i=0;i<size;i++){
+           // if(node==null)return false;
             if(node.getInteger() == find) return true;
             node = node.getRightN();
         }

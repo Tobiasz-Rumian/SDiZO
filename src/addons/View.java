@@ -13,6 +13,8 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
+import static addons.Settings.*;
+
 /**
  * Klasa reprezentująca widok
  *
@@ -95,7 +97,7 @@ public class View {
     private void selectTask() {
         do {
             message(Messages.messageTask(), false);
-            Place place = null;
+            Place place = Place.NULL;
             switch (View.select("Podaj numer zadania:", 0, 7)) {
                 case 1:
                     message(structure.info(), false);
@@ -110,7 +112,9 @@ public class View {
                     if (structure.getClass() == Table.class || structure.getClass() == BidirectionalList.class) {
                         place = choosePlace("Podaj liczbe miejsca z ktorego chcesz usunac");
                         number = 0;
-                    } else number = select("Podaj liczbe ktora chcesz usunąć", Integer.MIN_VALUE, Integer.MAX_VALUE);
+                    } else if (structure.getClass() != BinaryHeap.class)
+                        number = select("Podaj liczbe ktora chcesz usunąć", Integer.MIN_VALUE, Integer.MAX_VALUE);
+                    else number = 0;
                     structure.subtract(place, number);
                     message(structure.show(), false);
                     break;
@@ -140,7 +144,7 @@ public class View {
                         if (select == 1 || select == 2) {
                             if (structure.getClass() == Table.class || structure.getClass() == BidirectionalList.class)
                                 place = choosePlace("Podaj miejsce, w które chcesz wstawiać");
-                            else place = null;
+                            else place = Place.NULL;
                         }
                         test(select, place);
                     }
@@ -159,6 +163,7 @@ public class View {
      * @return Zwraca liczbę pseudolosową z podanego przedziału.
      */
     public static Integer getRandom(Integer min, Integer max) {
+
         return random.nextInt(max - min) + min;
     }
 
@@ -183,6 +188,9 @@ public class View {
 
     /**
      * Funkcja pozwalająca na wykonanie testów na strukturze.
+     *
+     * @param task  Numer zadania do wykonania.
+     * @param place Miejsce dodania/usunięcia ze struktury (wykorzystywane tylko dla list i tablic).
      */
     private void test(int task, Place place) {
         /*
@@ -200,109 +208,75 @@ public class View {
         message(Messages.messageTest(), false);
         switch (task) {
             case 1:
-                //Dziesięć powtórzeń dla usprawnienia pamięci
-                for (int x = 0; x < Settings.howManyRepeatsBeforeStart; x++) {
-                    message(showProgress(x, Settings.howManyRepeatsBeforeStart) + "     " +
-                            structure.toString() + "  " + Settings.getHowManyElements() + "  " +
-                            place.toString()+
-                            " rozgrzewka Dodawanie", false);
+                for (int i = 0; i < getHowManyRepeats(); i++) {
+                    message(showProgress(i, getHowManyRepeats()) + "     " +
+                            structure.toString() + "  " + getHowManyElements() + "  " +
+                            place.toString() + " Dodawanie", false);
+
                     populationGenerator = new PopulationGenerator();
-                    for (int j = 0; j < Settings.getHowManyElements(); j++)
+                    for (int j = 0; j < populationGenerator.getPopulation().length; j++) {
                         structure.add(place, populationGenerator.getPopulation()[j]);
-                    structure.clear();
-                }
-                //Oficjalny test
-                for (int i = 0; i < Settings.getHowManyRepeats(); i++) {
-                    message(showProgress(i, Settings.getHowManyRepeats()) + "     " +
-                            structure.toString() + "  " + Settings.getHowManyElements() + "  " +
-                            place.toString()+
-                            " Dodawanie", false);
-                    populationGenerator = new PopulationGenerator();
-                    tracker.start();
-                    for (int j = 0; j < Settings.getHowManyElements(); j++)
-                        structure.add(place, populationGenerator.getPopulation()[j]);
+                        if (j == getHowManyElementsBeforeStart() - 1) tracker.start();
+                    }
                     resultTime = resultTime.add(BigDecimal.valueOf(tracker.getElapsedTime()));
                     structure.clear();
                 }
-                resultTime = resultTime.divide(BigDecimal.valueOf(Settings.getHowManyRepeats()), RoundingMode.UP);
-                resultTime = resultTime.divide(BigDecimal.valueOf(Settings.getHowManyElements()), RoundingMode.UP);
-                label = structure.toString() + "\t" + "Dodawanie" + "\t" + place.toString() + "\t" + Settings.getHowManyElements() + "\t" + Settings.getHowManyRepeats();
+                resultTime = resultTime.divide(BigDecimal.valueOf(getHowManyRepeats()), RoundingMode.UP);
+                resultTime = resultTime.divide(BigDecimal.valueOf(getHowManyElements()), RoundingMode.UP);
+                label = structure.toString() + "\t" + "Dodawanie" + "\t" + place.toString() + "\t" + getHowManyElements() + "\t" + getHowManyRepeats();
                 message(resultTime.toString(), false);
                 results.add(label, resultTime.longValue());
                 break;
             case 2:
-                //Dziesięć powtórzeń dla usprawnienia pamięci
-                for (int x = 0; x < Settings.howManyRepeatsBeforeStart; x++) {
-                    message(showProgress(x, Settings.howManyRepeatsBeforeStart) + "     " +
-                            structure.toString() + "  " + Settings.getHowManyElements() + "  " +
-                            place.toString()+
-                            " rozgrzewka Odejmowanie", false);
+                for (int i = 0; i < getHowManyRepeats(); i++) {
+                    message(showProgress(i, getHowManyRepeats()) + "     " +
+                            structure.toString() + "  " + getHowManyElements() + "  " +
+                            place.toString() + " Odejmowanie", false);
+
                     populationGenerator = new PopulationGenerator();
-                    for (int k = 0; k < Settings.getHowManyElements(); k++)
+                    for (int k = 0; k < populationGenerator.getPopulation().length; k++)
                         structure.add(Place.END, populationGenerator.getPopulation()[k]);
-                    for (int j = 0; j < structure.size(); j++) structure.subtract(place, 0);
-                    structure.clear();
-                }
-                //Oficjalny test
-                for (int i = 0; i < Settings.getHowManyRepeats(); i++) {
-                    message(showProgress(i, Settings.getHowManyRepeats()) + "     " +
-                            structure.toString() + "  " + Settings.getHowManyElements() + "  " +
-                            place.toString()+
-                            " Odejmowanie", false);
                     populationGenerator = new PopulationGenerator();
-                    for (int k = 0; k < Settings.getHowManyElements(); k++)
-                        structure.add(Place.END, populationGenerator.getPopulation()[k]);
-                    tracker.start();
-                    for (int j = 0; j < structure.size(); j++) structure.subtract(place, 0);
+                    for (int j = 0; j < structure.size(); j++) {
+                        structure.subtract(place, populationGenerator.getPopulation()[j]);
+                        if (j == getHowManyElementsBeforeStart() - 1) tracker.start();
+                    }
                     resultTime = resultTime.add(BigDecimal.valueOf(tracker.getElapsedTime()));
                     structure.clear();
                 }
-                resultTime = resultTime.divide(BigDecimal.valueOf(Settings.getHowManyRepeats()), RoundingMode.UP);
-                resultTime = resultTime.divide(BigDecimal.valueOf(Settings.getHowManyElements()), RoundingMode.UP);
+                resultTime = resultTime.divide(BigDecimal.valueOf(getHowManyRepeats()), RoundingMode.UP);
+                resultTime = resultTime.divide(BigDecimal.valueOf(getHowManyElements()), RoundingMode.UP);
                 label = structure.toString() + "\t" + "Usuwanie" + "\t" + place.toString() + "\t" +
-                        Settings.getHowManyElements() + "\t" + Settings.getHowManyRepeats();
+                        getHowManyElements() + "\t" + getHowManyRepeats();
                 message(resultTime.toString(), false);
                 results.add(label, resultTime.longValue());
                 break;
             case 3:
-                //Dziesięć powtórzeń dla usprawnienia pamięci
-                for (int x = 0; x < Settings.howManyRepeatsBeforeStart; x++) {
-                    message(showProgress(x, Settings.howManyRepeatsBeforeStart) + "     " +
-                            structure.toString() + "  " + Settings.getHowManyElements()+
-                            " rozgrzewka Wyszukiwanie", false);
+                for (int i = 0; i < getHowManyRepeats(); i++) {
+                    message(showProgress(i, getHowManyRepeats()) + "     " +
+                            structure.toString() + "  " + getHowManyElements() + " Wyszukiwanie", false);
+
                     populationGenerator = new PopulationGenerator();
-                    for (int k = 0; k < Settings.getHowManyElements(); k++)
+                    for (int k = 0; k < populationGenerator.getPopulation().length; k++)
                         structure.add(Place.END, populationGenerator.getPopulation()[k]);
                     populationGenerator = new PopulationGenerator();
-                    for (int j = 0; j < Settings.getHowManyElements(); j++)
+                    for (int j = 0; j < populationGenerator.getPopulation().length; j++) {
                         structure.find(populationGenerator.getPopulation()[j]);
-                    structure.clear();
-                }
-                //Oficjalny test
-                for (int i = 0; i < Settings.getHowManyRepeats(); i++) {
-                    message(showProgress(i, Settings.getHowManyRepeats()) + "     " +
-                            structure.toString() + "  " + Settings.getHowManyElements()+
-                            " Wyszukiwanie", false);
-                    populationGenerator = new PopulationGenerator();
-                    for (int k = 0; k < Settings.getHowManyElements(); k++)
-                        structure.add(Place.END, populationGenerator.getPopulation()[k]);
-                    populationGenerator = new PopulationGenerator();
-                    tracker.start();
-                    for (int j = 0; j < Settings.getHowManyElements(); j++)
-                        structure.find(populationGenerator.getPopulation()[j]);
+                        if (j == getHowManyElementsBeforeStart() - 1) tracker.start();
+                    }
                     resultTime = resultTime.add(BigDecimal.valueOf(tracker.getElapsedTime()));
                     structure.clear();
                 }
-                resultTime = resultTime.divide(BigDecimal.valueOf(Settings.getHowManyRepeats()), RoundingMode.UP);
-                resultTime = resultTime.divide(BigDecimal.valueOf(Settings.getHowManyElements()), RoundingMode.UP);
+                resultTime = resultTime.divide(BigDecimal.valueOf(getHowManyRepeats()), RoundingMode.UP);
+                resultTime = resultTime.divide(BigDecimal.valueOf(getHowManyElements()), RoundingMode.UP);
                 label = structure.toString() + "\t" + "Wyszukiwanie" + "\t" + "-" + "\t" +
-                        Settings.getHowManyElements() + "\t" + Settings.getHowManyRepeats();
+                        getHowManyElements() + "\t" + getHowManyRepeats();
                 message(resultTime.toString(), false);
                 results.add(label, resultTime.longValue());
                 break;
             case 4:
                 Settings.message();
-                Settings.changeSettings();
+                changeSettings();
                 break;
             case 5:
                 message(results.show(), false);
@@ -310,7 +284,6 @@ public class View {
             case 0: break;
         }
     }
-
 
     /**
      * Funkcja pozwalająca na wybór, przez użytkownika, miejsca wstawienia danych.
@@ -320,7 +293,7 @@ public class View {
      * @return Zwraca wybrane miejsce.
      */
     private Place choosePlace(String label) {
-        Place place = null;
+        Place place = Place.NULL;
         View.message("Gdzie odjac liczbe?", false);
         View.message("1. Poczatek", false);
         View.message("2. Koniec", false);
@@ -354,30 +327,29 @@ public class View {
      * Funkcja pozwalająca na wykonanie pełnych testów.
      */
     private void fullTest() {
-        int[] how = {1000, 2000, 4000, 8000, 16000};
-        Structure[] str = {new BstTree()};//new Table(),new BidirectionalList(), new BinaryHeap(), new BstTree()
-        Place[] p = {Place.START, Place.END, Place.RANDOM};
-        int[] t = {1, 2, 3};
-        for (Structure s : str) {
-            structure = s;
-            for (int i : t) {
-                if (structure.getClass() == Table.class || structure.getClass() == BidirectionalList.class) {
-                    for (Place pl : p) {
-                        for (int h : how) {
-                            Settings.setSettings(h, 100);
-                            test(i, pl);
+        int[] howMany = {2000, 4000, 6000, 8000, 10000};
+        Structure[] structures = {new BstTree()};//new Table(),new BidirectionalList(), new BinaryHeap(), new BstTree()
+        Place[] places = {Place.START, Place.END, Place.RANDOM};//Place.START, Place.END, Place.RANDOM
+        int[] tests = {2};//1, 2, 3
+        for (Structure structure : structures) {
+            this.structure = structure;
+            for (int test : tests) {
+                if (this.structure.getClass() == Table.class || this.structure.getClass() == BidirectionalList.class) {
+                    for (Place place : places) {
+                        for (int how : howMany) {
+                            setSettings(how, 100);
+                            test(test, place);
                         }
                         results.save();
                     }
                 } else {
-                    for (int h : how) {
-                        Settings.setSettings(h, 100);
-                        test(i, Place.END);
+                    for (int how : howMany) {
+                        setSettings(how, 100);
+                        test(test, Place.NULL);
                     }
                     results.save();
                 }
             }
-
         }
         results.save();
         results.clear();

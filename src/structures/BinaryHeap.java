@@ -14,7 +14,7 @@ import java.util.List;
 public class BinaryHeap implements Structure {
     private static final int length = 100000; //przechowuje informacje o wielkości całej tablicy
     private int heapSize = 0; //przechowuje informacje o wielkości kopca
-    private static final int[] heapTable = new int[length]; //tablica przechowująca kopiec
+    private static final Integer[] heapTable = new Integer[length]; //tablica przechowująca kopiec
     /*
     numer lewego syna = 2k + 1
     numer prawego syna = 2k + 2
@@ -45,6 +45,11 @@ public class BinaryHeap implements Structure {
         heapifyDown(counter);
         */
         //Dla usuwania korzenia
+        if(heapSize==0)return;
+        if(heapSize==1){
+            clear();
+            return;
+        }
         heapTable[0]=heapTable[heapSize-1];
         heapSize--;
         heapifyDown(0);
@@ -64,7 +69,10 @@ public class BinaryHeap implements Structure {
     @Override
     public boolean find(int find) {
         if (heapSize==0) return false;
-        for (int i : heapTable) if (i==find) return true;
+        for (Integer i : heapTable){
+            if(i==null) return false;
+            if (i==find) return true;
+        }
         return false;
     }
 

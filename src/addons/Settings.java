@@ -8,7 +8,7 @@ package addons;
 class Settings {
     private static Integer howManyElements = 1000;
     private static Integer howManyRepeats = 100;
-    public static Integer howManyRepeatsBeforeStart=5;
+    private static Integer howManyElementsBeforeStart=1000;
 
     static Integer getHowManyElements() {
         return howManyElements;
@@ -39,5 +39,9 @@ class Settings {
     static void setSettings(int howManyElements,int howManyRepeats){
         Settings.howManyElements=howManyElements;
         Settings.howManyRepeats=howManyRepeats;
+    }
+
+    public static Integer getHowManyElementsBeforeStart() {
+        return howManyElementsBeforeStart;
     }
 }
