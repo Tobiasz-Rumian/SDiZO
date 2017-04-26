@@ -176,7 +176,7 @@ public class View {
      */
     private void loadFromFile(Structure structure) {
         FileChooser fileChooser = new FileChooser();
-        if(fileChooser.getPath()==null)return;
+        if (fileChooser.getPath() == null) return;
         try (Stream<String> stream = Files.lines(Paths.get(fileChooser.getPath()))) {
             ArrayList<String> arrayList = new ArrayList<>();
             stream.filter(x -> !x.equals("")).forEach(arrayList::add);
@@ -194,13 +194,6 @@ public class View {
      * @param place Miejsce dodania/usunięcia ze struktury (wykorzystywane tylko dla list i tablic).
      */
     private void test(int task, Place place) {
-        /*
-                "1. Generuj populację struktury\n"+
-                "2. Usun ze struktury\n"+
-                "3. Wyszukaj w strukturze\n"+
-                "4. Ustawienia\n"+
-                "0. Zakończ test\n";
-         */
         TimeTracker tracker = new TimeTracker();
 
         String label;
@@ -208,7 +201,7 @@ public class View {
         PopulationGenerator populationGenerator;
         message(Messages.messageTest(), false);
         switch (task) {
-            case 1:
+            case 1://Generuj populację struktury
                 for (int i = 0; i < getHowManyRepeats(); i++) {
                     message(showProgress(i, getHowManyRepeats()) + "     " +
                             structure.toString() + "  " + getHowManyElements() + "  " +
@@ -228,7 +221,7 @@ public class View {
                 message(resultTime.toString(), false);
                 results.add(label, resultTime.longValue());
                 break;
-            case 2:
+            case 2://Usun ze struktury
                 for (int i = 0; i < getHowManyRepeats(); i++) {
                     message(showProgress(i, getHowManyRepeats()) + "     " +
                             structure.toString() + "  " + getHowManyElements() + "  " +
@@ -252,7 +245,7 @@ public class View {
                 message(resultTime.toString(), false);
                 results.add(label, resultTime.longValue());
                 break;
-            case 3:
+            case 3://Wyszukaj w strukturze
                 for (int i = 0; i < getHowManyRepeats(); i++) {
                     message(showProgress(i, getHowManyRepeats()) + "     " +
                             structure.toString() + "  " + getHowManyElements() + " Wyszukiwanie", false);
@@ -275,14 +268,15 @@ public class View {
                 message(resultTime.toString(), false);
                 results.add(label, resultTime.longValue());
                 break;
-            case 4:
+            case 4://Ustawienia
                 Settings.message();
                 changeSettings();
                 break;
-            case 5:
+            case 5://Pokaż wyniki
                 message(results.show(), false);
                 break;
-            case 0: break;
+            case 0://Zakończ test
+                break;
         }
     }
 
@@ -329,13 +323,13 @@ public class View {
      */
     private void fullTest() {
         int[] howMany = {2000, 4000, 6000, 8000, 10000};
-        Structure[] structures = {new BstTree()};//new Table(),new BidirectionalList(), new BinaryHeap(), new BstTree()
+        Structure[] structures = {new Table(),new BidirectionalList(), new BinaryHeap(), new BstTree()};//new Table(),new BidirectionalList(), new BinaryHeap(), new BstTree()
         Place[] places = {Place.START, Place.END, Place.RANDOM};//Place.START, Place.END, Place.RANDOM
-        int[] tests = {2};//1, 2, 3
+        int[] tests = {1, 2, 3};//1, 2, 3
         for (Structure structure : structures) {
             this.structure = structure;
             for (int test : tests) {
-                if (this.structure.getClass() == Table.class || this.structure.getClass() == BidirectionalList.class) {
+                if ((this.structure.getClass() == Table.class && test != 3) || (this.structure.getClass() == BidirectionalList.class && test != 3)) {
                     for (Place place : places) {
                         for (int how : howMany) {
                             setSettings(how, 100);
