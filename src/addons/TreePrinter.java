@@ -1,6 +1,6 @@
 package addons;
 
-import structures.RedBlackNode;
+import structures.Node;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,13 +12,13 @@ public class TreePrinter {
      *
      * @param root tree root node
      */
-    public static String print(PrintableNode root)
+    public static String print(Node root)
     {
         StringBuilder stringBuilder=new StringBuilder();
         List<List<String>> lines = new ArrayList<>();
 
-        List<PrintableNode> level = new ArrayList<>();
-        List<PrintableNode> next = new ArrayList<>();
+        List<Node> level = new ArrayList<>();
+        List<Node> next = new ArrayList<>();
 
         level.add(root);
         int nn = 1;
@@ -30,7 +30,7 @@ public class TreePrinter {
 
             nn = 0;
 
-            for (PrintableNode n : level) {
+            for (Node n : level) {
                 if (n == null) {
                     line.add(null);
 
@@ -38,7 +38,6 @@ public class TreePrinter {
                     next.add(null);
                 } else {
                     String aa = n.getText();
-                    if(n.getClass()== RedBlackNode.class) aa+=":"+n.getColorString();
                     line.add(aa);
                     if (aa.length() > widest) widest = aa.length();
 
@@ -54,7 +53,7 @@ public class TreePrinter {
 
             lines.add(line);
 
-            List<PrintableNode> tmp = level;
+            List<Node> tmp = level;
             level = next;
             next = tmp;
             next.clear();

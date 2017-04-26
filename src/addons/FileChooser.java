@@ -9,7 +9,7 @@ import java.io.File;
  * @author Tobiasz Rumian
  */
 class FileChooser extends JFrame {
-    private String path;
+    private String path=null;
 
     FileChooser() {
         JFileChooser chooser = new JFileChooser();
@@ -24,6 +24,10 @@ class FileChooser extends JFrame {
         }
     }
 
+    /**
+     * Zwraca wybraną przez użytkownika ścieżkę
+     * @return Wybrana ścieżka
+     */
     String getPath() {
         return path;
     }

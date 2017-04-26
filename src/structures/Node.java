@@ -1,59 +1,73 @@
 package structures;
 
-import addons.PrintableNode;
 import enums.PlaceOnList;
 
 /**
- * Created by Tobiasz Rumian on 30.03.2017.
+ * Klasa tworząca obiekty zawierające dwie referencje do swoich węzłów, oraz wartość liczbową.
+ * @author Tobiasz Rumian
  */
-public class Node implements PrintableNode {
-    private Node left = null;
-    private Node right = null;
-    private int integer = 0;
+public class Node{
+    private Node left = null; //Lewy węzeł
+    private Node right = null;//Prawy węzeł
+    private int integer = 0;//Wartość
 
-    public Node(Node left, Node right, int integer) {
+    /**
+     * Konstruktor pełny
+     * @param left Lewy węzeł
+     * @param right Prawy węzeł
+     * @param integer Wartość
+     */
+    Node(Node left, Node right, int integer) {
         this.left = left;
         this.right = right;
         this.integer = integer;
     }
 
-    public Node(Node list, int integer, PlaceOnList placeOnList) {
-        if (placeOnList == PlaceOnList.BEFORE) this.left = list;
-        else this.right = list;
+    /**
+     * Konstruktor z jednym węzłem
+     * @param node Przypisywany węzeł
+     * @param integer Wartość
+     * @param placeOnList Miejsce, do którego ma być przypisany węzeł.
+     */
+    Node(Node node, int integer, PlaceOnList placeOnList) {
+        if (placeOnList == PlaceOnList.LEFT) this.left = node;
+        else this.right = node;
         this.integer = integer;
     }
 
-    public Node(int integer) {
+    /**
+     * Konstruktor bez węzłów (np. Korzeń)
+     * @param integer Wartość
+     */
+    Node(int integer) {
         this.integer = integer;
     }
 
-    @Override
-    public PrintableNode getLeft() {
+    /**
+     * Zwraca lewy węzeł
+     * @return Lewy węzeł
+     */
+    public Node getLeft() {
         return left;
     }
-
-    @Override
-    public PrintableNode getRight() {
+    /**
+     * Zwraca prawy węzeł
+     * @return Prawy węzeł
+     */
+    public Node getRight() {
         return right;
     }
-
-
-    public Node getLeftN() {
-        return left;
-    }
-
-
-    public Node getRightN() {
-        return right;
-    }
-
-    public int getInteger() {
+    /**
+     * Zwraca wartość
+     * @return Wartość
+     */
+    int getInteger() {
         return integer;
     }
 
     @Override
     public boolean equals(Object o) {
-        return integer == (int)o;
+        return o.getClass() == Integer.class && integer == (int) o;
     }
 
     @Override
@@ -61,25 +75,25 @@ public class Node implements PrintableNode {
         return Integer.hashCode(integer);
     }
 
-    public void setInteger(int integer) {
-        this.integer = integer;
-    }
-
-    public void setRight(Node right) {
+    /**
+     * Ustawia prawy węzeł
+     */
+    void setRight(Node right) {
         this.right = right;
     }
-
-    public void setLeft(Node left) {
+    /**
+     * Ustawia lewy węzeł
+     */
+    void setLeft(Node left) {
         this.left = left;
     }
 
-    @Override
+    /**
+     * Zwraca wartość w postaci String'a
+     * @return Wartość w postaci String'a
+     */
     public String getText() {
         return Integer.toString(integer);
     }
 
-    @Override
-    public String getColorString() {
-        return "";
-    }
 }

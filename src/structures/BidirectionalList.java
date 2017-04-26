@@ -39,37 +39,37 @@ public class BidirectionalList implements Structure {
 
     @Override
     public void subtract(Place place, int number) {
-        if (firstElement.getRightN() == null || lastElement.getLeftN() == null) clear();
+        if (firstElement.getRight() == null || lastElement.getLeft() == null) clear();
         if (size == 0) return;
         switch (place) {
             case START:
-                firstElement = firstElement.getRightN();
-                firstElement.setLeft(null);
+                firstElement = firstElement.getRight();//Wstawianie prawego dziecka pierwszego elementu w jego miejsce
+                firstElement.setLeft(null);//Usuwanie referencji do poprzedniego pierwszego elementu
                 break;
             case END:
-                lastElement = lastElement.getLeftN();
-                lastElement.setRight(null);
+                lastElement = lastElement.getLeft();//Wstawianie lewego dziecka ostatniego elementu w jego miejsce
+                lastElement.setRight(null);//Usuwanie referencji do poprzedniego ostatniego elementu
                 break;
             case RANDOM:
-                Node list = get(View.getRandom(0, size()-1));
-                if (list == firstElement) {
-                    firstElement = firstElement.getRightN();
+                Node node = get(View.getRandom(0, size()-1));//Losowanie indeksu i pobieranie węzła
+                if (node == firstElement) {//Jeżeli wylosowano pierwszy element, postępuj tak jak wyżej
+                    firstElement = firstElement.getRight();
                     firstElement.setLeft(null);
-                } else if (list == lastElement) {
-                    lastElement = lastElement.getLeftN();
+                } else if (node == lastElement) {//Jeżeli wylosowano ostatni element, postępuj tak jak wyżej
+                    lastElement = lastElement.getLeft();
                     lastElement.setRight(null);
                 } else {
-                    list.getLeftN().setRight(list.getRightN());
-                    list.getRightN().setLeft(list.getLeftN());
+                    node.getLeft().setRight(node.getRight());//Ustaw prawe dziecko węzła, jako prawe dziecko lewego dziecka węzła
+                    node.getRight().setLeft(node.getLeft());//Ustaw lewe dziecko węzła, jako lewe dziecko prawego dziecka węzła
                 }
                 break;
         }
-        size--;
+        size--;//Zmniejsz rozmiar listy o 1
     }
 
     @Override
     public void add(Place place, int number) {
-        if (size==0) {
+        if (size==0) {//Jeżeli rozmiar tablicy==0 Ustaw nowy węzeł jako pierwszy i ostatni element
             Node list = new Node(number);
             firstElement = list;
             lastElement = list;
@@ -78,33 +78,33 @@ public class BidirectionalList implements Structure {
         }
         switch (place) {
             case START: {
-                Node newNode = new Node(firstElement, number, PlaceOnList.AFTER);
-                firstElement.setLeft(newNode);
-                firstElement = newNode;
+                Node newNode = new Node(firstElement, number, PlaceOnList.RIGHT);//Tworzenie nowego elementu z prawym dzieckiem jako pierwszym elementem tablicy
+                firstElement.setLeft(newNode);//Ustaw nowy węzeł jako lewy węzeł pierwszego elementu
+                firstElement = newNode;//Ustaw nowy węzeł jako pierwszy element
                 break;
             }
             case END: {
-                Node newNode = new Node(lastElement, number, PlaceOnList.BEFORE);
-                lastElement.setRight(newNode);
-                lastElement = newNode;
+                Node newNode = new Node(lastElement, number, PlaceOnList.LEFT);//Tworzenie nowego elementu z lewym dzieckiem jako ostatnim elementem tablicy
+                lastElement.setRight(newNode);//Ustaw nowy węzeł jako prawy węzeł ostatniego elementu
+                lastElement = newNode;//Ustaw nowy węzeł jako ostatni element
                 break;
             }
             case RANDOM: {
                 int i=0;
-                if(size!=1) i=View.getRandom(0, size()-1);
-                if (i == 0) {
-                    Node newNode = new Node(firstElement, number, PlaceOnList.AFTER);
+                if(size!=1) i=View.getRandom(0, size()-1);//Jeżeli tablica ma więcej niż jeden element, wylosuj miejsce wstawienia
+                if (i == 0) {//Postępuj jak z wstawianiem na początek
+                    Node newNode = new Node(firstElement, number, PlaceOnList.RIGHT);
                     firstElement.setLeft(newNode);
                     firstElement = newNode;
-                } else if (i == size()-1) {
-                    Node newNode = new Node(lastElement, number, PlaceOnList.BEFORE);
+                } else if (i == size()-1) {//Postępuj jak z wstawianiem na koniec
+                    Node newNode = new Node(lastElement, number, PlaceOnList.LEFT);
                     lastElement.setRight(newNode);
                     lastElement = newNode;
                 } else {
-                    Node node = get(i);
-                    Node newNode = new Node(node.getLeftN(), node, number);
-                    node.getLeftN().setRight(newNode);
-                    node.setLeft(newNode);
+                    Node node = get(i);//Znajdź odpowiedni węzeł
+                    Node newNode = new Node(node.getLeft(), node, number);//Stwórz nowy węzeł
+                    node.getLeft().setRight(newNode);//Ustaw nowy węzeł jako prawe dziecko lewego dziecka wylosowanego węzła
+                    node.setLeft(newNode);//Ustaw nowy węzeł jako lewe dziecko wylosowanego węzła
                 }
                 break;
             }
@@ -117,20 +117,20 @@ public class BidirectionalList implements Structure {
         if (size==0) return false;
         Node node = firstElement;
         for(int i=0;i<size;i++){
-           // if(node==null)return false;
-            if(node.getInteger() == find) return true;
-            node = node.getRightN();
+            if(node.getInteger() == find) return true;//Sprawdź, czy sprawdzany węzeł == szukany węzeł
+            node = node.getRight();//Idź do prawego węzła
         }
         return false;
     }
 
     @Override
     public String show() {
+        if(size==0)return "";
         StringBuilder sb = new StringBuilder();
         Node list = firstElement;
-        while (list.getRightN() != null) {
+        while (list.getRight() != null) {
             sb.append("[").append(list.getInteger()).append("]");
-            list = list.getRightN();
+            list = list.getRight();
         }
         return sb.toString();
     }
@@ -139,7 +139,6 @@ public class BidirectionalList implements Structure {
     public String toString() {
         return "Lista dwukierunkowa";
     }
-
 
     /**
      * Funkcja pozwalająca zdobyć rekord pasujący do wartości.
@@ -151,13 +150,11 @@ public class BidirectionalList implements Structure {
         Node node;
         if (((size-1) / 2) <= index){
             node = firstElement;
-            for (int i = 0; i < index; i++) node = node.getRightN();
+            for (int i = 0; i < index; i++) node = node.getRight();
         } else{
             node = lastElement;
-            for (int i = 0; i < (size-1-index); i++) node = node.getLeftN();
+            for (int i = 0; i < (size-1-index); i++) node = node.getLeft();
         }
         return node;
-
-
     }
 }

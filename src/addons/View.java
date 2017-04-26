@@ -176,6 +176,7 @@ public class View {
      */
     private void loadFromFile(Structure structure) {
         FileChooser fileChooser = new FileChooser();
+        if(fileChooser.getPath()==null)return;
         try (Stream<String> stream = Files.lines(Paths.get(fileChooser.getPath()))) {
             ArrayList<String> arrayList = new ArrayList<>();
             stream.filter(x -> !x.equals("")).forEach(arrayList::add);
