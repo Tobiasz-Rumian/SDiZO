@@ -119,6 +119,7 @@ public class BstTree implements Structure {
 
     @Override
     public boolean find(int find) {
+        if (root==null) return false;
         Node current = root;
         while (current.getInteger() != find) {
             if (current.getLeft() == null && current.getRight() == null) return false;

@@ -29,15 +29,19 @@ public class Table implements Structure {
         int[] x = new int[table.length - 1];//Tworzenie tablicy o jeden mniejszej od oryginału
         switch (place) {
             case START:
-                for (int i = 1; i < table.length; i++) x[i - 1] = table[i];//Przekopiowywanie tablicy, zaczynając od drugiego rekordu
+                for (int i = 1; i < table.length; i++)
+                    x[i - 1] = table[i];//Przekopiowywanie tablicy, zaczynając od drugiego rekordu
                 break;
             case END:
-                for (int i = 0; i < table.length - 1; i++) x[i] = table[i];//Przekopiowywanie tablicy, kończąc o jeden rekord wcześniej
+                for (int i = 0; i < table.length - 1; i++)
+                    x[i] = table[i];//Przekopiowywanie tablicy, kończąc o jeden rekord wcześniej
                 break;
             case RANDOM:
                 int random = View.getRandom(0, table.length);//Generowanie losowego indeksu.
-                for (int i = 0; i < random; i++) x[i] = table[i];//Przekopiowywanie tablicy od indeksu 0 do wylosowanego indeksu-1
-                for (int i = random; i < x.length; i++) x[i] = table[i + 1];//Przekopiowywanie tablicy od wylosowanego indeksu+1 do końca
+                for (int i = 0; i < random; i++)
+                    x[i] = table[i];//Przekopiowywanie tablicy od indeksu 0 do wylosowanego indeksu-1
+                for (int i = random; i < x.length; i++)
+                    x[i] = table[i + 1];//Przekopiowywanie tablicy od wylosowanego indeksu+1 do końca
                 break;
         }
         table = x;//Przypisywanie nowej tablicy w miejsce starej
@@ -53,7 +57,8 @@ public class Table implements Structure {
         int[] x = new int[table.length + 1];//Tworzenie tablicy większej o 1
         switch (place) {
             case START:
-                for (int i = 0; i < table.length; i++) x[i + 1] = table[i]; //Przekopiowywanie tablicy do nowej o indeksie i+1
+                for (int i = 0; i < table.length; i++)
+                    x[i + 1] = table[i]; //Przekopiowywanie tablicy do nowej o indeksie i+1
                 x[0] = number;//Wstawianie nowej liczby na miejsce 0
                 break;
             case END:
@@ -62,9 +67,11 @@ public class Table implements Structure {
                 break;
             case RANDOM:
                 int random = View.getRandom(0, table.length); //Losowanie indeksu
-                for (int i = 0; i < random; i++) x[i] = table[i];//Przekopiowywanie tablicy od indeksu 0 do wylosowanego indeksu-1
+                for (int i = 0; i < random; i++)
+                    x[i] = table[i];//Przekopiowywanie tablicy od indeksu 0 do wylosowanego indeksu-1
                 x[random] = number;//Wstawianie nowej liczby
-                for (int i = random + 1; i < x.length; i++) x[i] = table[i - 1];//Przekopiowywanie tablicy z indeksów i-1 do i
+                for (int i = random + 1; i < x.length; i++)
+                    x[i] = table[i - 1];//Przekopiowywanie tablicy z indeksów i-1 do i
                 break;
         }
         table = x;//Przypisywanie nowej tablicy w miejsce starej
@@ -99,5 +106,37 @@ public class Table implements Structure {
     @Override
     public void clear() {
         table = null;
+    }
+
+    public void addAll(int[] table) {
+        this.table = table;
+    }
+
+    public void add(int index, int value) {
+        if (table == null || table.length == 0) {//Jeżeli tablica nie istnieje, stwórz nową
+            table = new int[1];
+            table[0] = value;
+        } else {
+            int[] x = new int[table.length + 1];//Tworzenie tablicy większej o 1
+            for (int i = 0; i < index; i++)
+                x[i] = table[i];//Przekopiowywanie tablicy od indeksu 0 do wylosowanego indeksu-1
+            x[index] = value;//Wstawianie nowej liczby
+            for (int i = index + 1; i < x.length; i++)
+                x[i] = table[i - 1];//Przekopiowywanie tablicy z indeksów i-1 do i
+            table = x;//Przypisywanie nowej tablicy w miejsce starej
+        }
+    }
+
+    public void subtract(int index) {
+        if (table.length == 1)
+            table = null; //Sprawdzanie, czy tablica zawiera tylko jeden rekord, jeżeli tak, usuwanie tablicy
+        else {
+            int[] x = new int[table.length - 1];//Tworzenie tablicy o jeden mniejszej od oryginału
+            for (int i = 0; i < index; i++)
+                x[i] = table[i];//Przekopiowywanie tablicy od indeksu 0 do wylosowanego indeksu-1
+            for (int i = index; i < x.length; i++)
+                x[i] = table[i + 1];//Przekopiowywanie tablicy od wylosowanego indeksu+1 do końca
+            table = x;//Przypisywanie nowej tablicy w miejsce starej
+        }
     }
 }

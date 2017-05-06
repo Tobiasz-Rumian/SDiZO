@@ -103,26 +103,28 @@ public class View {
                     message(structure.info(), false);
                     break;
                 case 2:
+                    structure.clear();
                     loadFromFile(structure);
                     message(structure.show(), false);
                     break;
                 case 3:
                     View.message(View.title("odejmowanie"), false);
-                    Integer number;
-                    if (structure.getClass() == Table.class || structure.getClass() == BidirectionalList.class) {
-                        place = choosePlace("Podaj liczbe miejsca z ktorego chcesz usunac");
-                        number = 0;
-                    } else if (structure.getClass() != BinaryHeap.class)
-                        number = select("Podaj liczbe ktora chcesz usunąć", Integer.MIN_VALUE, Integer.MAX_VALUE);
-                    else number = 0;
-                    structure.subtract(place, number);
+                    if(structure.getClass() == Table.class )
+                        ((Table)structure).subtract(select("Podaj indeks", Integer.MIN_VALUE, Integer.MAX_VALUE));
+                    else if(structure.getClass() == BidirectionalList.class)
+                        ((BidirectionalList)structure).subtract(select("Podaj wartość", Integer.MIN_VALUE, Integer.MAX_VALUE));
+                    else structure.subtract(place, select("Podaj wartość", Integer.MIN_VALUE, Integer.MAX_VALUE));
                     message(structure.show(), false);
                     break;
                 case 4:
                     View.message(View.title("dodawanie"), false);
-                    if (structure.getClass() == Table.class || structure.getClass() == BidirectionalList.class)
-                        place = choosePlace("Podaj liczbe miejsca, w ktore chcesz wstawic");
-                    structure.add(place, select("Podaj liczbe ktora chcesz wstawic", Integer.MIN_VALUE, Integer.MAX_VALUE));
+                    if(structure.getClass() == Table.class )
+                        ((Table)structure).add(select("Podaj indeks", Integer.MIN_VALUE, Integer.MAX_VALUE),
+                                select("Podaj wartość", Integer.MIN_VALUE, Integer.MAX_VALUE));
+                    else if(structure.getClass() == BidirectionalList.class)
+                        ((BidirectionalList)structure).add(select("Podaj indeks", Integer.MIN_VALUE, Integer.MAX_VALUE),
+                                select("Podaj wartość", Integer.MIN_VALUE, Integer.MAX_VALUE));
+                    else structure.add(place, select("Podaj wartość", Integer.MIN_VALUE, Integer.MAX_VALUE));
                     message(structure.show(), false);
                     break;
                 case 5:
@@ -208,15 +210,35 @@ public class View {
                             place.toString() + " Dodawanie", false);
 
                     populationGenerator = new PopulationGenerator();
-                    for (int j = 0; j < populationGenerator.getPopulation().length; j++) {
-                        structure.add(place, populationGenerator.getPopulation()[j]);
-                        if (j == getHowManyElementsBeforeStart() - 1) tracker.start();
+                    if (structure.getClass() == Table.class) {
+                        Table table = new Table();
+                        table.addAll(populationGenerator.getPopulation());
+                        table.subtract(Place.END, 0);
+                        int rand =random.nextInt();
+                        tracker.start();
+                        table.add(place, rand);
+                        resultTime = resultTime.add(tracker.getElapsedTime());
+                    } else {
+                        if (place == Place.RANDOM) {
+                            for (int j = 0; j < populationGenerator.getPopulation().length - 1; j++)
+                                structure.add(Place.END, populationGenerator.getPopulation()[j]);
+                            int add =  populationGenerator.getPopulation()[populationGenerator.getPopulation().length - 1];
+                            tracker.start();
+                            structure.add(place,add);
+                            resultTime = resultTime.add(tracker.getElapsedTime());
+                            structure.clear();
+                        } else {
+                            for (int j = 0; j < populationGenerator.getPopulation().length-1; j++)
+                                structure.add(place, populationGenerator.getPopulation()[j]);
+                            int add = populationGenerator.getPopulation()[populationGenerator.getPopulation().length-1];
+                            tracker.start();
+                            structure.add(place,add);
+                            resultTime = resultTime.add(tracker.getElapsedTime());
+                            structure.clear();
+                        }
                     }
-                    resultTime = resultTime.add(BigDecimal.valueOf(tracker.getElapsedTime()));
-                    structure.clear();
                 }
                 resultTime = resultTime.divide(BigDecimal.valueOf(getHowManyRepeats()), RoundingMode.UP);
-                resultTime = resultTime.divide(BigDecimal.valueOf(getHowManyElements()), RoundingMode.UP);
                 label = structure.toString() + "\t" + "Dodawanie" + "\t" + place.toString() + "\t" + getHowManyElements() + "\t" + getHowManyRepeats();
                 message(resultTime.toString(), false);
                 results.add(label, resultTime.longValue());
@@ -228,18 +250,23 @@ public class View {
                             place.toString() + " Odejmowanie", false);
 
                     populationGenerator = new PopulationGenerator();
-                    for (int k = 0; k < populationGenerator.getPopulation().length; k++)
-                        structure.add(Place.END, populationGenerator.getPopulation()[k]);
-                    populationGenerator = new PopulationGenerator();
-                    for (int j = 0; j < structure.size(); j++) {
-                        structure.subtract(place, populationGenerator.getPopulation()[j]);
-                        if (j == getHowManyElementsBeforeStart() - 1) tracker.start();
+                    if (structure.getClass() == Table.class) {
+                        Table table = new Table();
+                        table.addAll(populationGenerator.getPopulation());
+                        tracker.start();
+                        table.subtract(place, 0);
+                        resultTime = resultTime.add(tracker.getElapsedTime());
+                    } else {
+                        for (int k = 0; k < populationGenerator.getPopulation().length; k++)
+                            structure.add(Place.END, populationGenerator.getPopulation()[k]);
+                        int rand = random.nextInt();
+                        tracker.start();
+                        structure.subtract(place, rand);
+                        resultTime = resultTime.add(tracker.getElapsedTime());
+                        structure.clear();
                     }
-                    resultTime = resultTime.add(BigDecimal.valueOf(tracker.getElapsedTime()));
-                    structure.clear();
                 }
                 resultTime = resultTime.divide(BigDecimal.valueOf(getHowManyRepeats()), RoundingMode.UP);
-                resultTime = resultTime.divide(BigDecimal.valueOf(getHowManyElements()), RoundingMode.UP);
                 label = structure.toString() + "\t" + "Usuwanie" + "\t" + place.toString() + "\t" +
                         getHowManyElements() + "\t" + getHowManyRepeats();
                 message(resultTime.toString(), false);
@@ -251,18 +278,24 @@ public class View {
                             structure.toString() + "  " + getHowManyElements() + " Wyszukiwanie", false);
 
                     populationGenerator = new PopulationGenerator();
-                    for (int k = 0; k < populationGenerator.getPopulation().length; k++)
-                        structure.add(Place.END, populationGenerator.getPopulation()[k]);
-                    populationGenerator = new PopulationGenerator();
-                    for (int j = 0; j < populationGenerator.getPopulation().length; j++) {
-                        structure.find(populationGenerator.getPopulation()[j]);
-                        if (j == getHowManyElementsBeforeStart() - 1) tracker.start();
+                    if (structure.getClass() == Table.class) {
+                        Table table = (Table) structure;
+                        table.addAll(populationGenerator.getPopulation());
+                        int rand = random.nextInt();
+                        tracker.start();
+                        table.find(rand);
+                        resultTime = resultTime.add(tracker.getElapsedTime());
+                    } else {
+                        for (int k = 0; k < populationGenerator.getPopulation().length; k++)
+                            structure.add(Place.END, populationGenerator.getPopulation()[k]);
+                        int rand = random.nextInt();
+                        tracker.start();
+                        structure.find(rand);
+                        resultTime = resultTime.add(tracker.getElapsedTime());
+                        structure.clear();
                     }
-                    resultTime = resultTime.add(BigDecimal.valueOf(tracker.getElapsedTime()));
-                    structure.clear();
                 }
                 resultTime = resultTime.divide(BigDecimal.valueOf(getHowManyRepeats()), RoundingMode.UP);
-                resultTime = resultTime.divide(BigDecimal.valueOf(getHowManyElements()), RoundingMode.UP);
                 label = structure.toString() + "\t" + "Wyszukiwanie" + "\t" + "-" + "\t" +
                         getHowManyElements() + "\t" + getHowManyRepeats();
                 message(resultTime.toString(), false);
@@ -323,23 +356,23 @@ public class View {
      */
     private void fullTest() {
         int[] howMany = {2000, 4000, 6000, 8000, 10000};
-        Structure[] structures = {new Table(),new BidirectionalList(), new BinaryHeap(), new BstTree()};//new Table(),new BidirectionalList(), new BinaryHeap(), new BstTree()
+        Structure[] structures = {new BstTree()};//new Table(),new BidirectionalList(), new BinaryHeap(), new BstTree()
         Place[] places = {Place.START, Place.END, Place.RANDOM};//Place.START, Place.END, Place.RANDOM
-        int[] tests = {1, 2, 3};//1, 2, 3
+        int[] tests = {1,2,3};//1, 2, 3
         for (Structure structure : structures) {
             this.structure = structure;
             for (int test : tests) {
                 if ((this.structure.getClass() == Table.class && test != 3) || (this.structure.getClass() == BidirectionalList.class && test != 3)) {
                     for (Place place : places) {
                         for (int how : howMany) {
-                            setSettings(how, 100);
+                            setSettings(how, getHowManyRepeats());
                             test(test, place);
                         }
                         results.save();
                     }
                 } else {
                     for (int how : howMany) {
-                        setSettings(how, 100);
+                        setSettings(how, getHowManyRepeats());
                         test(test, Place.NULL);
                     }
                     results.save();

@@ -157,4 +157,46 @@ public class BidirectionalList implements Structure {
         }
         return node;
     }
+    public void add(int index, int value){
+        if (size==0) {//Jeżeli rozmiar tablicy==0 Ustaw nowy węzeł jako pierwszy i ostatni element
+            Node list = new Node(value);
+            firstElement = list;
+            lastElement = list;
+            size++;
+            return;
+        }else {
+            if (index == 0) {//Postępuj jak z wstawianiem na początek
+                Node newNode = new Node(firstElement, value, PlaceOnList.RIGHT);
+                firstElement.setLeft(newNode);
+                firstElement = newNode;
+            } else if (index == size()-1) {//Postępuj jak z wstawianiem na koniec
+                Node newNode = new Node(lastElement, value, PlaceOnList.LEFT);
+                lastElement.setRight(newNode);
+                lastElement = newNode;
+            } else {
+                Node node = get(index);//Znajdź odpowiedni węzeł
+                Node newNode = new Node(node.getLeft(), node, value);//Stwórz nowy węzeł
+                node.getLeft().setRight(newNode);//Ustaw nowy węzeł jako prawe dziecko lewego dziecka wylosowanego węzła
+                node.setLeft(newNode);//Ustaw nowy węzeł jako lewe dziecko wylosowanego węzła
+            }
+        }
+        size++;
+    }
+    public void subtract(int index){
+        if (firstElement.getRight() == null || lastElement.getLeft() == null) clear();
+        else{
+            Node node = get(index);//Losowanie indeksu i pobieranie węzła
+            if (node == firstElement) {//Jeżeli wylosowano pierwszy element, postępuj tak jak wyżej
+                firstElement = firstElement.getRight();
+                firstElement.setLeft(null);
+            } else if (node == lastElement) {//Jeżeli wylosowano ostatni element, postępuj tak jak wyżej
+                lastElement = lastElement.getLeft();
+                lastElement.setRight(null);
+            } else {
+                node.getLeft().setRight(node.getRight());//Ustaw prawe dziecko węzła, jako prawe dziecko lewego dziecka węzła
+                node.getRight().setLeft(node.getLeft());//Ustaw lewe dziecko węzła, jako lewe dziecko prawego dziecka węzła
+            }
+        }
+        size--;//Zmniejsz rozmiar listy o 1
+    }
 }

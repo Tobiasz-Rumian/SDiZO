@@ -33,25 +33,25 @@ public class BinaryHeap implements Structure {
 
     @Override
     public void subtract(Place place, int number) throws IllegalArgumentException, IndexOutOfBoundsException {
-        if(heapSize==0)return;
-        if(heapSize==1){
-            clear();
-            return;
+        if(heapSize==1) clear();
+        else{
+            int index=-1;
+            for(int i=0;i<heapTable.length;i++) if (i == number) index=i;
+            if(index==-1) return;
+            heapTable[index] = heapTable[heapSize - 1];
+            heapSize--;
+            heapifyDown(index);
         }
-        heapTable[0]=heapTable[heapSize-1];//Przenosimy ostatni liść na miejsce korzenia
-        heapSize--;//Zmniejszamy rozmiar kopca o 1
-        heapifyDown(0);//Sortujemy kopiec w dół
     }
 
     @Override
     public void add(Place place, int number) throws IllegalArgumentException {
         heapTable[heapSize] = number;
-        if (heapSize == 0) {
-            heapSize++;
-            return;
+        if (heapSize == 0) heapSize++;
+        else{
+            heapifyUp(heapSize);//Sortujemy kopiec w górę
+            heapSize++;//Zwiększamy rozmiar kopca o 1
         }
-        heapifyUp(heapSize);//Sortujemy kopiec w górę
-        heapSize++;//Zwiększamy rozmiar kopca o 1
     }
 
     @Override
@@ -190,6 +190,4 @@ public class BinaryHeap implements Structure {
         }
         heapifyDown(biggestChild);//Rekurencyjnie przechodzi w dół kopca
     }
-
-
 }
