@@ -113,6 +113,7 @@ public class Table implements Structure {
     }
 
     public void add(int index, int value) {
+        if(index>table.length)return;
         if (table == null || table.length == 0) {//Jeżeli tablica nie istnieje, stwórz nową
             table = new int[1];
             table[0] = value;
@@ -128,6 +129,7 @@ public class Table implements Structure {
     }
 
     public void subtract(int index) {
+        if(index>table.length-1)return;
         if (table.length == 1)
             table = null; //Sprawdzanie, czy tablica zawiera tylko jeden rekord, jeżeli tak, usuwanie tablicy
         else {

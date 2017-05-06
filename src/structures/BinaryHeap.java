@@ -36,7 +36,7 @@ public class BinaryHeap implements Structure {
         if(heapSize==1) clear();
         else{
             int index=-1;
-            for(int i=0;i<heapTable.length;i++) if (i == number) index=i;
+            for(int i=0;i<heapTable.length;i++) if (heapTable[i] == number) index=i;
             if(index==-1) return;
             heapTable[index] = heapTable[heapSize - 1];
             heapSize--;

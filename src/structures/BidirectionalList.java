@@ -96,7 +96,7 @@ public class BidirectionalList implements Structure {
                     Node newNode = new Node(firstElement, number, PlaceOnList.RIGHT);
                     firstElement.setLeft(newNode);
                     firstElement = newNode;
-                } else if (i == size()-1) {//Postępuj jak z wstawianiem na koniec
+                } else if (i == size()) {//Postępuj jak z wstawianiem na koniec
                     Node newNode = new Node(lastElement, number, PlaceOnList.LEFT);
                     lastElement.setRight(newNode);
                     lastElement = newNode;
@@ -128,10 +128,10 @@ public class BidirectionalList implements Structure {
         if(size==0)return "";
         StringBuilder sb = new StringBuilder();
         Node list = firstElement;
-        while (list.getRight() != null) {
-            sb.append("[").append(list.getInteger()).append("]");
+        do {
+            sb.append(" ").append(list.getInteger()).append(" ");
             list = list.getRight();
-        }
+        }while (list != null);
         return sb.toString();
     }
 
@@ -158,6 +158,7 @@ public class BidirectionalList implements Structure {
         return node;
     }
     public void add(int index, int value){
+        if(index>size)return;
         if (size==0) {//Jeżeli rozmiar tablicy==0 Ustaw nowy węzeł jako pierwszy i ostatni element
             Node list = new Node(value);
             firstElement = list;
@@ -169,7 +170,7 @@ public class BidirectionalList implements Structure {
                 Node newNode = new Node(firstElement, value, PlaceOnList.RIGHT);
                 firstElement.setLeft(newNode);
                 firstElement = newNode;
-            } else if (index == size()-1) {//Postępuj jak z wstawianiem na koniec
+            } else if (index == size()) {//Postępuj jak z wstawianiem na koniec
                 Node newNode = new Node(lastElement, value, PlaceOnList.LEFT);
                 lastElement.setRight(newNode);
                 lastElement = newNode;
@@ -182,10 +183,14 @@ public class BidirectionalList implements Structure {
         }
         size++;
     }
-    public void subtract(int index){
+    public void subtract(int value){
         if (firstElement.getRight() == null || lastElement.getLeft() == null) clear();
         else{
-            Node node = get(index);//Losowanie indeksu i pobieranie węzła
+            Node node = firstElement;
+            for(int i=0;i<size;i++){
+                if(node.getInteger() == value) break;//Sprawdź, czy sprawdzany węzeł == szukany węzeł
+                node = node.getRight();//Idź do prawego węzła
+            }
             if (node == firstElement) {//Jeżeli wylosowano pierwszy element, postępuj tak jak wyżej
                 firstElement = firstElement.getRight();
                 firstElement.setLeft(null);
