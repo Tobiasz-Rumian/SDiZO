@@ -40,7 +40,8 @@ public class BinaryHeap implements Structure {
             if(index==-1) return;
             heapTable[index] = heapTable[heapSize - 1];
             heapSize--;
-            heapifyDown(index);
+            if(heapTable[(index - 1) / 2]<heapTable[index]) heapifyUp(index);
+            else heapifyDown(index);
         }
     }
 

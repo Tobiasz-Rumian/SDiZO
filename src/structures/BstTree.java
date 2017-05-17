@@ -1,5 +1,6 @@
 package structures;
 
+import addons.Settings;
 import addons.TreePrinter;
 import enums.Place;
 
@@ -29,7 +30,7 @@ public class BstTree implements Structure {
     @Override
     public void subtract(Place place, int number) throws IllegalArgumentException, IndexOutOfBoundsException {
         if (size == 0) return;
-        if (size == 1) {
+        if (root.getInteger()==number) {
             clear();
             return;
         }
@@ -84,7 +85,7 @@ public class BstTree implements Structure {
             else if (isLeftChild) parent.setLeft(successor);//Wstaw na miejsce węzła następce
             else parent.setRight(successor);
         }
-        DSW();//Algorytm sortujący drzewo
+        if(Settings.x) DSW();//Algorytm sortujący drzewo
     }
 
     @Override
@@ -103,14 +104,14 @@ public class BstTree implements Structure {
                 current = current.getLeft();
                 if (current == null) {
                     parent.setLeft(newNode);//Wstaw nowy węzeł jako lewe dziecko
-                    DSW();//Algorytm sortujący drzewo
+                    if(Settings.x) DSW();//Algorytm sortujący drzewo
                     return;
                 }
             } else {//Inaczej, idź w prawo
                 current = current.getRight();
                 if (current == null) {
                     parent.setRight(newNode);//Wstaw węzeł jako prawe dziecko
-                    DSW();//Algorytm sortujący drzewo
+                    if(Settings.x) DSW();//Algorytm sortujący drzewo
                     return;
                 }
             }

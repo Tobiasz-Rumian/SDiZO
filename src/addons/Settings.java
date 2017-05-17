@@ -5,10 +5,10 @@ package addons;
  *
  * @author Tobiasz Rumian
  */
-class Settings {
+public class Settings {
     private static Integer howManyElements = 1000;
     private static Integer howManyRepeats = 1000;
-
+    public static boolean x=false;
     static Integer getHowManyElements() {
         return howManyElements;
     }

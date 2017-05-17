@@ -89,7 +89,7 @@ public class Table implements Structure {
     public String show() {
         if (table == null || table.length == 0) return "Brak danych";
         StringBuilder sb = new StringBuilder();
-        for (int i : table) sb.append("[").append(i).append("]");
+        for (int i : table) sb.append(" ").append(i).append(" ");
         return sb.toString();
     }
 
@@ -113,25 +113,30 @@ public class Table implements Structure {
     }
 
     public void add(int index, int value) {
-        if(index>table.length)return;
-        if (table == null || table.length == 0) {//Jeżeli tablica nie istnieje, stwórz nową
+        if (table!=null&&index > table.length) return;
+        if ((table == null || table.length == 0)&&index==0) {//Jeżeli tablica nie istnieje, stwórz nową
             table = new int[1];
             table[0] = value;
-        } else {
-            int[] x = new int[table.length + 1];//Tworzenie tablicy większej o 1
+        }else if(table==null&&index!=0){
+            return;
+        }else{
+            int[] x = new int[table.length+1];//Tworzenie tablicy większej o 1
             for (int i = 0; i < index; i++)
                 x[i] = table[i];//Przekopiowywanie tablicy od indeksu 0 do wylosowanego indeksu-1
             x[index] = value;//Wstawianie nowej liczby
             for (int i = index + 1; i < x.length; i++)
                 x[i] = table[i - 1];//Przekopiowywanie tablicy z indeksów i-1 do i
             table = x;//Przypisywanie nowej tablicy w miejsce starej
+
         }
+
     }
 
     public void subtract(int index) {
-        if(index>table.length-1)return;
-        if (table.length == 1)
-            table = null; //Sprawdzanie, czy tablica zawiera tylko jeden rekord, jeżeli tak, usuwanie tablicy
+        if(table==null)return;
+        else if (index > table.length - 1) return;
+        else if (table.length == 1)
+            clear(); //Sprawdzanie, czy tablica zawiera tylko jeden rekord, jeżeli tak, usuwanie tablicy
         else {
             int[] x = new int[table.length - 1];//Tworzenie tablicy o jeden mniejszej od oryginału
             for (int i = 0; i < index; i++)

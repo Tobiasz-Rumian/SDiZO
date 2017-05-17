@@ -39,7 +39,11 @@ public class View {
                     break;
                 case 3: structure = new BinaryHeap();
                     break;
-                case 4: structure = new BstTree();
+                case 4:
+                    structure = new BstTree();
+                        message("Z równoważeniem? (0-false,1-true)",false);
+                        int z = View.select("Podaj numer:", 0, 1);
+                        Settings.x = z != 0;
                     break;
                 case 5: fullTest();
                     return;
@@ -98,6 +102,7 @@ public class View {
         do {
             message(Messages.messageTask(), false);
             Place place = Place.NULL;
+
             switch (View.select("Podaj numer zadania:", 0, 7)) {
                 case 1:
                     message(structure.info(), false);
