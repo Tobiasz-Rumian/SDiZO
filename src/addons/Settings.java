@@ -7,7 +7,7 @@ package addons;
  */
 public class Settings {
     private static Integer howManyElements = 1000;
-    private static Integer howManyRepeats = 1000;
+    private static Integer howManyRepeats = 100;
     public static boolean x=false;
     static Integer getHowManyElements() {
         return howManyElements;
@@ -18,16 +18,14 @@ public class Settings {
     }
 
     static String message() {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(View.title("ustawienia")).append("\n")
-                .append("Ilosc elementów: ").append(howManyElements).append("\n")
-                .append("Ilosc powtórzeń: ").append(howManyRepeats).append("\n");
-        return stringBuilder.toString();
+        return View.title("ustawienia") + "\n" +
+                "Ilosc elementów: " + howManyElements + "\n" +
+                "Ilosc powtórzeń: " + howManyRepeats + "\n";
     }
 
     static void changeSettings() {
-        View.message("Co chcesz zmienić?", false);
-        View.message("1. Ilość elementów\n" + "2. Ilość powtórzeń\n", false);
+        View.printMessage("Co chcesz zmienić?");
+        View.printMessage("1. Ilość elementów\n" + "2. Ilość powtórzeń\n");
         switch (View.select("Wybierz liczbę",1,2)){
             case 1:Settings.howManyElements=View.select("Podaj liczbę elementów",1,Integer.MAX_VALUE);
                 break;

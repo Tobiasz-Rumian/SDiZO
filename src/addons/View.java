@@ -24,14 +24,11 @@ public class View {
     private static Random random = new Random();//Generator pseudolosowy
     private Structure structure; // Struktura, na której odbywają się wszystkie zadania.
     private Results results = new Results();//Obiekt zawierający wyniki testów.
-
-    /**
-     * Główna pętla programu, wyświetla główne menu.
-     */
+    
     private View() {
-        message(Messages.messageStart(), false);
+        printMessage(Messages.messageStart());
         while (true) {
-            message(Messages.messageMainMenu(), false);
+            printMessage(Messages.messageMainMenu());
             switch (select("Podaj numer zadania:", 0, 5)) {
                 case 1: structure = new Table();
                     break;
@@ -39,13 +36,9 @@ public class View {
                     break;
                 case 3: structure = new BinaryHeap();
                     break;
-                case 4:
-                    structure = new BstTree();
-                        message("Z równoważeniem? (0-false,1-true)",false);
-                        int z = View.select("Podaj numer:", 0, 1);
-                        Settings.x = z != 0;
+                case 4: structure = setBstTree();
                     break;
-                case 5: fullTest();
+                case 5: Test.fullTest();
                     return;
                 case 0: return;
             }
@@ -53,29 +46,22 @@ public class View {
         }
     }
 
-    /**
-     * Funkcja formatująca tytuł.
-     *
-     * @param title Tekst do sformatowania.
-     * @return Zwraca sformatowany tytuł.
-     */
+    private Structure setBstTree(){
+        printMessage("Z równoważeniem? (0-false,1-true)");
+        int z = View.select("Podaj numer:", 0, 1);
+        Settings.x = z != 0;
+        return  new BstTree();
+    }
+    
     static String title(String title) {
         return "===========" + title.toUpperCase() + "===========\n";
     }
 
-    /**
-     * Funkcja obsługują wybieranie numeru przez użytkownika.
-     * Obsługuje wybór z konsoli.
-     *
-     * @param message Wiadomość do wyświetlenia użytkownikowi.
-     * @param min     Minimalna akceptowalna wartość.
-     * @param max     Maksymalna akceptowalna wartość.
-     * @return Zwraca odpowiedź użytkownika.
-     */
+
     static int select(String message, Integer min, Integer max) {
         do {
             try {
-                message(message, false);
+                printMessage(message);
                 Scanner in = new Scanner(System.in);
                 int i = Integer.parseInt(in.nextLine());
                 if (i <= max && i >= min) return i;
@@ -84,308 +70,155 @@ public class View {
         } while (true);
     }
 
-    /**
-     * Funkcja pozwalająca wyświetlić wiadomość na ekranie.
-     *
-     * @param message Wiadomość do wyświetlenia.
-     * @param error   Jeżeli true, wyświetla wiadomość jako błąd.
-     */
-    static void message(String message, Boolean error) {
-        if (error) System.err.println(message + "\n");
-        else System.out.println(message + "\n");
+    static Integer select(String message) {
+        while (true){
+            try {
+                printMessage(message);
+                Scanner in = new Scanner(System.in);
+                return Integer.parseInt(in.nextLine());
+            } catch (NumberFormatException ignored) { }
+        }
+    }
+
+   
+    static void printMessage(String message) {
+        System.out.println(message + "\n");
+    }
+    
+    static void printErrorMessage(String message){
+        System.err.println(message + "\n");
     }
 
     /**
      * Funkcja pozwalająca na wybranie zadania wykonywanego na strukturze.
      */
     private void selectTask() {
-        do {
-            message(Messages.messageTask(), false);
+        while (true) {
+            printMessage(Messages.messageTask());
             Place place = Place.NULL;
 
             switch (View.select("Podaj numer zadania:", 0, 7)) {
-                case 1:
-                    message(structure.info(), false);
+                case 1: displayInfo();
                     break;
-                case 2:
-                    structure.clear();
-                    loadFromFile(structure);
-                    message(structure.show(), false);
+                case 2: readFromFile();
                     break;
-                case 3:
-                    View.message(View.title("odejmowanie"), false);
-                    if(structure.getClass() == Table.class )
-                        ((Table)structure).subtract(select("Podaj indeks", Integer.MIN_VALUE, Integer.MAX_VALUE));
-                    else if(structure.getClass() == BidirectionalList.class)
-                        ((BidirectionalList)structure).subtract(select("Podaj wartość", Integer.MIN_VALUE, Integer.MAX_VALUE));
-                    else structure.subtract(place, select("Podaj wartość", Integer.MIN_VALUE, Integer.MAX_VALUE));
-                    message(structure.show(), false);
+                case 3: deleteFromStructure(place);
                     break;
-                case 4:
-                    View.message(View.title("dodawanie"), false);
-                    if(structure.getClass() == Table.class )
-                        ((Table)structure).add(select("Podaj indeks", Integer.MIN_VALUE, Integer.MAX_VALUE),
-                                select("Podaj wartość", Integer.MIN_VALUE, Integer.MAX_VALUE));
-                    else if(structure.getClass() == BidirectionalList.class)
-                        ((BidirectionalList)structure).add(select("Podaj indeks", Integer.MIN_VALUE, Integer.MAX_VALUE),
-                                select("Podaj wartość", Integer.MIN_VALUE, Integer.MAX_VALUE));
-                    else structure.add(place, select("Podaj wartość", Integer.MIN_VALUE, Integer.MAX_VALUE));
-                    message(structure.show(), false);
+                case 4: addToStructure(place);
                     break;
-                case 5:
-                    View.message(View.title("znajdowanie"), false);
-                    if (structure.find(View.select("Podaj liczbe", Integer.MIN_VALUE, Integer.MAX_VALUE)))
-                        message("Liczba znajduje się w strukturze", false);
-                    else message("Liczba nie znajduje się w strukturze", true);
-                    message(structure.show(), false);
+                case 5: findInStructure();
                     break;
-                case 6:
-                    message(structure.show(), false);
+                case 6: displayStructure();
                     break;
-                case 7:
-                    results.clear();
-                    while (true) {
-                        message(Messages.messageTest(), false);
-                        int select = View.select("Podaj numer zadania:", 0, 5);
-                        if (select == 0) break;
-                        if (select == 1 || select == 2) {
-                            if (structure.getClass() == Table.class || structure.getClass() == BidirectionalList.class)
-                                place = choosePlace("Podaj miejsce, w które chcesz wstawiać");
-                            else place = Place.NULL;
-                        }
-                        test(select, place);
-                    }
+                case 7: test(place);
                     break;
-                case 0:
-                    return;
+                case 0: return;
             }
-        } while (true);
+        }
     }
 
-    /**
-     * Funkcja zwracająca wartość pseudolosową z podanego przedziału.
-     *
-     * @param min Minimalna wartość.
-     * @param max Maksymalna wartość.
-     * @return Zwraca liczbę pseudolosową z podanego przedziału.
-     */
-    public static Integer getRandom(Integer min, Integer max) {
+    private void test(Place place) {
+        clearResults();
+        while (true) {
+            printMessage(Messages.messageTest());
+            int select = View.select("Podaj numer zadania:", 0, 5);
+            if (select == 0) break;
+            if (select == 1 || select == 2) {
+                if (structure.getClass() == Table.class || structure.getClass() == BidirectionalList.class)
+                    place = choosePlace("Podaj miejsce, w które chcesz wstawiać");
+                else place = Place.NULL;
+            }
+            Test.test(select, place,structure);
+        }
+    }
+
+    private void clearResults() {
+        results.clear();
+    }
+
+    private void displayStructure() {
+        printMessage(structure.show());
+    }
+
+    private void findInStructure() {
+        View.printMessage(View.title("znajdowanie"));
+        if (structure.find(View.select("Podaj liczbe")))printMessage("Liczba znajduje się w strukturze");
+        else printErrorMessage("Liczba nie znajduje się w strukturze");
+        displayStructure();
+    }
+
+    private void addToStructure(Place place) {
+        View.printMessage(View.title("dodawanie"));
+        if(structure.getClass() == Table.class ){
+            ((Table)structure).add(selectIndex(), selectValue());
+        }
+        else if(structure.getClass() == BidirectionalList.class){
+            ((BidirectionalList)structure).add(selectIndex(), selectValue());
+        }
+        else structure.add(place, selectValue());
+        displayStructure();
+    }
+
+    private Integer selectValue() {
+        return select("Podaj wartość");
+    }
+
+    private Integer selectIndex() {
+        return select("Podaj indeks");
+    }
+
+    private void deleteFromStructure(Place place) {
+        View.printMessage(View.title("odejmowanie"));
+        if(structure.getClass() == Table.class )
+            ((Table)structure).subtract(selectIndex());
+        else if(structure.getClass() == BidirectionalList.class)
+            ((BidirectionalList)structure).subtract(selectValue());
+        else structure.subtract(place, selectValue());
+        displayStructure();
+    }
+
+    private void readFromFile() {
+        structure.clear();
+        loadFromFile(structure);
+        displayStructure();
+    }
+
+    private void displayInfo() {
+        printMessage(structure.info());
+    }
+
+    public static int getRandom(Integer min, Integer max) {
 
         return random.nextInt(max - min) + min;
     }
 
-    /**
-     * Funkcja pozwalająca na załadowanie danych z pliku tekstowego do struktury.
-     * Wyświetla okno pozwalające na wybór pliku.
-     * Usuwa pierwszy wyraz, gdyż według specyfikacji projektowej, pierwsza wartość oznacza ilość elementów.
-     *
-     * @param structure Struktura, do której mają być załadowane dane.
-     */
     private void loadFromFile(Structure structure) {
         FileChooser fileChooser = new FileChooser();
         if (fileChooser.getPath() == null) return;
         try (Stream<String> stream = Files.lines(Paths.get(fileChooser.getPath()))) {
             ArrayList<String> arrayList = new ArrayList<>();
-            stream.filter(x -> !x.equals("")).forEach(arrayList::add);
-            arrayList.remove(0);
-            arrayList.forEach(x -> structure.add(Place.END, Integer.parseInt(x)));
+            stream.forEach(arrayList::add);
+            ArrayList<Integer> integers = new ArrayList<>();
+            for (int i=1;i<=Integer.parseInt(arrayList.get(0));i++){
+                integers.add(Integer.parseInt(arrayList.get(i)));
+            }
+            integers.forEach(x -> structure.add(Place.END, x));
         } catch (IOException e) {
-            e.getMessage();
+            printErrorMessage("Wystąpił błąd podczas ładowania pliku");
         }
     }
 
-    /**
-     * Funkcja pozwalająca na wykonanie testów na strukturze.
-     *
-     * @param task  Numer zadania do wykonania.
-     * @param place Miejsce dodania/usunięcia ze struktury (wykorzystywane tylko dla list i tablic).
-     */
-    private void test(int task, Place place) {
-        TimeTracker tracker = new TimeTracker();
-
-        String label;
-        BigDecimal resultTime = new BigDecimal(0);
-        PopulationGenerator populationGenerator;
-        message(Messages.messageTest(), false);
-        switch (task) {
-            case 1://Generuj populację struktury
-                for (int i = 0; i < getHowManyRepeats(); i++) {
-                    message(showProgress(i, getHowManyRepeats()) + "     " +
-                            structure.toString() + "  " + getHowManyElements() + "  " +
-                            place.toString() + " Dodawanie", false);
-
-                    populationGenerator = new PopulationGenerator();
-                    if (structure.getClass() == Table.class) {
-                        Table table = new Table();
-                        table.addAll(populationGenerator.getPopulation());
-                        table.subtract(Place.END, 0);
-                        int rand =random.nextInt();
-                        tracker.start();
-                        table.add(place, rand);
-                        resultTime = resultTime.add(tracker.getElapsedTime());
-                    } else {
-                        if (place == Place.RANDOM) {
-                            for (int j = 0; j < populationGenerator.getPopulation().length - 1; j++)
-                                structure.add(Place.END, populationGenerator.getPopulation()[j]);
-                            int add =  populationGenerator.getPopulation()[populationGenerator.getPopulation().length - 1];
-                            tracker.start();
-                            structure.add(place,add);
-                            resultTime = resultTime.add(tracker.getElapsedTime());
-                            structure.clear();
-                        } else {
-                            for (int j = 0; j < populationGenerator.getPopulation().length-1; j++)
-                                structure.add(place, populationGenerator.getPopulation()[j]);
-                            int add = populationGenerator.getPopulation()[populationGenerator.getPopulation().length-1];
-                            tracker.start();
-                            structure.add(place,add);
-                            resultTime = resultTime.add(tracker.getElapsedTime());
-                            structure.clear();
-                        }
-                    }
-                }
-                resultTime = resultTime.divide(BigDecimal.valueOf(getHowManyRepeats()), RoundingMode.UP);
-                label = structure.toString() + "\t" + "Dodawanie" + "\t" + place.toString() + "\t" + getHowManyElements() + "\t" + getHowManyRepeats();
-                message(resultTime.toString(), false);
-                results.add(label, resultTime.longValue());
-                break;
-            case 2://Usun ze struktury
-                for (int i = 0; i < getHowManyRepeats(); i++) {
-                    message(showProgress(i, getHowManyRepeats()) + "     " +
-                            structure.toString() + "  " + getHowManyElements() + "  " +
-                            place.toString() + " Odejmowanie", false);
-
-                    populationGenerator = new PopulationGenerator();
-                    if (structure.getClass() == Table.class) {
-                        Table table = new Table();
-                        table.addAll(populationGenerator.getPopulation());
-                        tracker.start();
-                        table.subtract(place, 0);
-                        resultTime = resultTime.add(tracker.getElapsedTime());
-                    } else {
-                        for (int k = 0; k < populationGenerator.getPopulation().length; k++)
-                            structure.add(Place.END, populationGenerator.getPopulation()[k]);
-                        int rand = random.nextInt();
-                        tracker.start();
-                        structure.subtract(place, rand);
-                        resultTime = resultTime.add(tracker.getElapsedTime());
-                        structure.clear();
-                    }
-                }
-                resultTime = resultTime.divide(BigDecimal.valueOf(getHowManyRepeats()), RoundingMode.UP);
-                label = structure.toString() + "\t" + "Usuwanie" + "\t" + place.toString() + "\t" +
-                        getHowManyElements() + "\t" + getHowManyRepeats();
-                message(resultTime.toString(), false);
-                results.add(label, resultTime.longValue());
-                break;
-            case 3://Wyszukaj w strukturze
-                for (int i = 0; i < getHowManyRepeats(); i++) {
-                    message(showProgress(i, getHowManyRepeats()) + "     " +
-                            structure.toString() + "  " + getHowManyElements() + " Wyszukiwanie", false);
-
-                    populationGenerator = new PopulationGenerator();
-                    if (structure.getClass() == Table.class) {
-                        Table table = (Table) structure;
-                        table.addAll(populationGenerator.getPopulation());
-                        int rand = random.nextInt();
-                        tracker.start();
-                        table.find(rand);
-                        resultTime = resultTime.add(tracker.getElapsedTime());
-                    } else {
-                        for (int k = 0; k < populationGenerator.getPopulation().length; k++)
-                            structure.add(Place.END, populationGenerator.getPopulation()[k]);
-                        int rand = random.nextInt();
-                        tracker.start();
-                        structure.find(rand);
-                        resultTime = resultTime.add(tracker.getElapsedTime());
-                        structure.clear();
-                    }
-                }
-                resultTime = resultTime.divide(BigDecimal.valueOf(getHowManyRepeats()), RoundingMode.UP);
-                label = structure.toString() + "\t" + "Wyszukiwanie" + "\t" + "-" + "\t" +
-                        getHowManyElements() + "\t" + getHowManyRepeats();
-                message(resultTime.toString(), false);
-                results.add(label, resultTime.longValue());
-                break;
-            case 4://Ustawienia
-                Settings.message();
-                changeSettings();
-                break;
-            case 5://Pokaż wyniki
-                message(results.show(), false);
-                break;
-            case 0://Zakończ test
-                break;
-        }
-    }
-
-    /**
-     * Funkcja pozwalająca na wybór, przez użytkownika, miejsca wstawienia danych.
-     * Wybór odbywa się w konsoli.
-     *
-     * @param label Tekst, który ma zostać wyświetlony użytkownikowi.
-     * @return Zwraca wybrane miejsce.
-     */
     private Place choosePlace(String label) {
         Place place = Place.NULL;
-        View.message("Gdzie odjac liczbe?", false);
-        View.message("1. Poczatek", false);
-        View.message("2. Koniec", false);
-        View.message("3. Losowo", false);
+        View.printMessage("Gdzie odjac liczbe?");
+        View.printMessage("1. Poczatek");
+        View.printMessage("2. Koniec");
+        View.printMessage("3. Losowo");
         Integer i = View.select(label, 1, 3);
         if (i.equals(1)) place = Place.START;
         else if (i.equals(2)) place = Place.END;
         else if (i.equals(3)) place = Place.RANDOM;
         return place;
-    }
-
-    /**
-     * Funkcja pozwalająca na zobaczenie postępu.
-     *
-     * @param now Wartość chwilowa.
-     * @param end Wartość końcowa.
-     * @return Zwraca postęp w postaci paska oraz procentu w postaci ułamka.
-     */
-    private String showProgress(Integer now, Integer end) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("[");
-        Integer percent = (int) ((now * 100.0f) / end);
-        for (int i = 0; i <= percent; i++) stringBuilder.append("=");
-        for (int i = 0; i <= 100 - percent; i++) stringBuilder.append(" ");
-        stringBuilder.append("]");
-        stringBuilder.append(" ").append(percent).append("%");
-        return stringBuilder.toString();
-    }
-
-    /**
-     * Funkcja pozwalająca na wykonanie pełnych testów.
-     */
-    private void fullTest() {
-        int[] howMany = {2000, 4000, 6000, 8000, 10000};
-        Structure[] structures = {new BstTree()};//new Table(),new BidirectionalList(), new BinaryHeap(), new BstTree()
-        Place[] places = {Place.START, Place.END, Place.RANDOM};//Place.START, Place.END, Place.RANDOM
-        int[] tests = {1,2,3};//1, 2, 3
-        for (Structure structure : structures) {
-            this.structure = structure;
-            for (int test : tests) {
-                if ((this.structure.getClass() == Table.class && test != 3) || (this.structure.getClass() == BidirectionalList.class && test != 3)) {
-                    for (Place place : places) {
-                        for (int how : howMany) {
-                            setSettings(how, getHowManyRepeats());
-                            test(test, place);
-                        }
-                        results.save();
-                    }
-                } else {
-                    for (int how : howMany) {
-                        setSettings(how, getHowManyRepeats());
-                        test(test, Place.NULL);
-                    }
-                    results.save();
-                }
-            }
-        }
-        results.save();
-        results.clear();
     }
 
     public static void main(String[] args) {

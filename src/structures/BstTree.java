@@ -30,10 +30,6 @@ public class BstTree implements Structure {
     @Override
     public void subtract(Place place, int number) throws IllegalArgumentException, IndexOutOfBoundsException {
         if (size == 0) return;
-        if (root.getInteger()==number) {
-            clear();
-            return;
-        }
         Node parent = root;
         Node current = root;
         //Algorytm wyszukiwania w drzewie
@@ -128,7 +124,10 @@ public class BstTree implements Structure {
                 if(current.getRight()==null)return false;
                 current=current.getRight();//Jeżeli wartość current jest mniejsza od szukanego numeru, należy szukać w prawej gałęzi.
             }
-            else current = current.getLeft();
+            else{
+                if (current.getLeft()==null) return false;
+                current = current.getLeft();
+            }
         }
         return true;
     }

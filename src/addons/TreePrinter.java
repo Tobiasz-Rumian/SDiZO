@@ -98,25 +98,29 @@ public class TreePrinter {
             }
 
             // print line of numbers
-            for (String f : line) {
-
-                if (f == null) f = "";
-                int gap1 = (int) Math.ceil(perPiece / 2f - f.length() / 2f);
-                int gap2 = (int) Math.floor(perPiece / 2f - f.length() / 2f);
-
-                // a number
-                for (int k = 0; k < gap1; k++) {
-                    stringBuilder.append(" ");
-                }
-                stringBuilder.append(f);
-                for (int k = 0; k < gap2; k++) {
-                    stringBuilder.append(" ");
-                }
-            }
+            printLine(stringBuilder, perPiece, line);
             stringBuilder.append("\n");
 
             perPiece /= 2;
         }
         return stringBuilder.toString();
+    }
+
+    public static void printLine(StringBuilder stringBuilder, int perPiece, List<String> line) {
+        for (String f : line) {
+
+            if (f == null) f = "";
+            int gap1 = (int) Math.ceil(perPiece / 2f - f.length() / 2f);
+            int gap2 = (int) Math.floor(perPiece / 2f - f.length() / 2f);
+
+            // a number
+            for (int k = 0; k < gap1; k++) {
+                stringBuilder.append(" ");
+            }
+            stringBuilder.append(f);
+            for (int k = 0; k < gap2; k++) {
+                stringBuilder.append(" ");
+            }
+        }
     }
 }

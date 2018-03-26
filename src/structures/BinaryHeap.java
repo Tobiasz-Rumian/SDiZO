@@ -1,5 +1,6 @@
 package structures;
 
+import addons.TreePrinter;
 import enums.Place;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.List;
  * @author Tobiasz Rumian.
  */
 public class BinaryHeap implements Structure {
-    private static final int length = 100000; //przechowuje informacje o wielkości całej tablicy
+    private static final int length = 2000000; //przechowuje informacje o wielkości całej tablicy
     private int heapSize = 0; //przechowuje informacje o wielkości kopca
     private static final int[] heapTable = new int[length]; //tablica przechowująca kopiec
     /*
@@ -33,6 +34,7 @@ public class BinaryHeap implements Structure {
 
     @Override
     public void subtract(Place place, int number) throws IllegalArgumentException, IndexOutOfBoundsException {
+        if (heapSize==0) return;
         if(heapSize==1) clear();
         else{
             int index=-1;
@@ -125,19 +127,7 @@ public class BinaryHeap implements Structure {
                 stringBuilder.append("\n");
             }
             // print line of numbers
-            for (String f : line) {
-                if (f == null) f = "";
-                int gap1 = (int) Math.ceil(perPiece / 2f - f.length() / 2f);
-                int gap2 = (int) Math.floor(perPiece / 2f - f.length() / 2f);
-                // a number
-                for (int k = 0; k < gap1; k++) {
-                    stringBuilder.append(" ");
-                }
-                stringBuilder.append(f);
-                for (int k = 0; k < gap2; k++) {
-                    stringBuilder.append(" ");
-                }
-            }
+            TreePrinter.printLine(stringBuilder, perPiece, line);
             stringBuilder.append("\n");
             perPiece /= 2;
         }

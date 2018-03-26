@@ -34,7 +34,7 @@ public class PopulationGenerator {
     }
 
     public static void main(String[] args) {
-        Settings.message();
+        View.printMessage(Settings.message());
         Settings.changeSettings();
         PopulationGenerator populationGenerator=new PopulationGenerator();
         populationGenerator.saveToFile();
