@@ -6,9 +6,10 @@ package addons;
  * @author Tobiasz Rumian
  */
 public class Settings {
+    public static boolean x = false;
     private static Integer howManyElements = 1000;
     private static Integer howManyRepeats = 100;
-    public static boolean x=false;
+
     static Integer getHowManyElements() {
         return howManyElements;
     }
@@ -26,15 +27,18 @@ public class Settings {
     static void changeSettings() {
         View.printMessage("Co chcesz zmienić?");
         View.printMessage("1. Ilość elementów\n" + "2. Ilość powtórzeń\n");
-        switch (View.select("Wybierz liczbę",1,2)){
-            case 1:Settings.howManyElements=View.select("Podaj liczbę elementów",1,Integer.MAX_VALUE);
+        switch (View.select("Wybierz liczbę", 1, 2)) {
+            case 1:
+                Settings.howManyElements = View.select("Podaj liczbę elementów", 1, Integer.MAX_VALUE);
                 break;
-            case 2:Settings.howManyRepeats=View.select("Podaj liczbę powtórzeń",1,Integer.MAX_VALUE);
+            case 2:
+                Settings.howManyRepeats = View.select("Podaj liczbę powtórzeń", 1, Integer.MAX_VALUE);
                 break;
         }
     }
-    static void setSettings(int howManyElements,int howManyRepeats){
-        Settings.howManyElements=howManyElements;
-        Settings.howManyRepeats=howManyRepeats;
+
+    static void setSettings(int howManyElements, int howManyRepeats) {
+        Settings.howManyElements = howManyElements;
+        Settings.howManyRepeats = howManyRepeats;
     }
 }

@@ -2,6 +2,7 @@ package addons;
 
 /**
  * Klasa przechowująca wiadomości do wyświetlenia
+ *
  * @author Tobiasz Rumian
  */
 class Messages {
@@ -17,7 +18,6 @@ class Messages {
                 "2. Lista dwukierunkowa\n" +
                 "3. Kopiec binarny\n" +
                 "4. Drzewo BST\n" +
-                //"5. Drzewo czerwono czarne\n" +
                 "0. Wyjscie";
     }
 
@@ -30,16 +30,17 @@ class Messages {
                 "5. Znajdz" + "\n" +
                 "6. Wyswietl" + "\n" +
                 "7. Test" + "\n" +
+                "8. *ALFA, TYLKO DLA BST!* wykonaj algorytm DSW" + "\n" +
                 "0. wyjscie";
     }
 
     static String messageTest() {
-        return View.title("test") +
+        return View.title("test.txt") +
                 "1. Generuj populację struktury\n" +
                 "2. Usun ze struktury\n" +
                 "3. Wyszukaj w strukturze\n" +
                 "4. Ustawienia\n" +
-                "5. Pokaż wyniki\n"+
-                "0. Zakończ test\n";
+                "5. Pokaż wyniki\n" +
+                "0. Zakończ test.txt\n";
     }
 }

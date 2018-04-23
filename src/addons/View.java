@@ -4,16 +4,12 @@ import enums.Place;
 import structures.*;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.stream.Stream;
-
-import static addons.Settings.*;
 
 /**
  * Klasa reprezentująca widok
@@ -24,39 +20,37 @@ public class View {
     private static Random random = new Random();//Generator pseudolosowy
     private Structure structure; // Struktura, na której odbywają się wszystkie zadania.
     private Results results = new Results();//Obiekt zawierający wyniki testów.
-    
+
     private View() {
         printMessage(Messages.messageStart());
         while (true) {
             printMessage(Messages.messageMainMenu());
             switch (select("Podaj numer zadania:", 0, 5)) {
-                case 1: structure = new Table();
+                case 1:
+                    structure = new Table();
                     break;
-                case 2: structure = new BidirectionalList();
+                case 2:
+                    structure = new BidirectionalList();
                     break;
-                case 3: structure = new BinaryHeap();
+                case 3:
+                    structure = new BinaryHeap();
                     break;
-                case 4: structure = setBstTree();
+                case 4:
+                    structure = setBstTree();
                     break;
-                case 5: Test.fullTest();
+                case 5:
+                    Test.fullTest();
                     return;
-                case 0: return;
+                case 0:
+                    return;
             }
             selectTask();
         }
     }
 
-    private Structure setBstTree(){
-        printMessage("Z równoważeniem? (0-false,1-true)");
-        int z = View.select("Podaj numer:", 0, 1);
-        Settings.x = z != 0;
-        return  new BstTree();
-    }
-    
     static String title(String title) {
         return "===========" + title.toUpperCase() + "===========\n";
     }
-
 
     static int select(String message, Integer min, Integer max) {
         do {
@@ -71,22 +65,38 @@ public class View {
     }
 
     static Integer select(String message) {
-        while (true){
+        while (true) {
             try {
                 printMessage(message);
                 Scanner in = new Scanner(System.in);
                 return Integer.parseInt(in.nextLine());
-            } catch (NumberFormatException ignored) { }
+            } catch (NumberFormatException ignored) {
+            }
         }
     }
 
-   
     static void printMessage(String message) {
         System.out.println(message + "\n");
     }
-    
-    static void printErrorMessage(String message){
+
+    static void printErrorMessage(String message) {
         System.err.println(message + "\n");
+    }
+
+    public static int getRandom(Integer min, Integer max) {
+
+        return random.nextInt(max - min) + min;
+    }
+
+    public static void main(String[] args) {
+        new View();
+    }
+
+    private Structure setBstTree() {
+        printMessage("Z równoważeniem? (0-false,1-true)");
+        int z = View.select("Podaj numer:", 0, 1);
+        Settings.x = z != 0;
+        return new BstTree();
     }
 
     /**
@@ -97,22 +107,34 @@ public class View {
             printMessage(Messages.messageTask());
             Place place = Place.NULL;
 
-            switch (View.select("Podaj numer zadania:", 0, 7)) {
-                case 1: displayInfo();
+            switch (View.select("Podaj numer zadania:", 0, 8)) {
+                case 1:
+                    displayInfo();
                     break;
-                case 2: readFromFile();
+                case 2:
+                    readFromFile();
                     break;
-                case 3: deleteFromStructure(place);
+                case 3:
+                    deleteFromStructure(place);
                     break;
-                case 4: addToStructure(place);
+                case 4:
+                    addToStructure(place);
                     break;
-                case 5: findInStructure();
+                case 5:
+                    findInStructure();
                     break;
-                case 6: displayStructure();
+                case 6:
+                    displayStructure();
                     break;
-                case 7: test(place);
+                case 7:
+                    test(place);
                     break;
-                case 0: return;
+                case 8:
+                    ((BstTree) structure).DSW();
+                    System.out.println(structure.show());
+                    break;
+                case 0:
+                    return;
             }
         }
     }
@@ -128,7 +150,7 @@ public class View {
                     place = choosePlace("Podaj miejsce, w które chcesz wstawiać");
                 else place = Place.NULL;
             }
-            Test.test(select, place,structure);
+            Test.test(select, place, structure);
         }
     }
 
@@ -142,20 +164,18 @@ public class View {
 
     private void findInStructure() {
         View.printMessage(View.title("znajdowanie"));
-        if (structure.find(View.select("Podaj liczbe")))printMessage("Liczba znajduje się w strukturze");
+        if (structure.find(View.select("Podaj liczbe"))) printMessage("Liczba znajduje się w strukturze");
         else printErrorMessage("Liczba nie znajduje się w strukturze");
         displayStructure();
     }
 
     private void addToStructure(Place place) {
         View.printMessage(View.title("dodawanie"));
-        if(structure.getClass() == Table.class ){
-            ((Table)structure).add(selectIndex(), selectValue());
-        }
-        else if(structure.getClass() == BidirectionalList.class){
-            ((BidirectionalList)structure).add(selectIndex(), selectValue());
-        }
-        else structure.add(place, selectValue());
+        if (structure.getClass() == Table.class) {
+            ((Table) structure).add(selectIndex(), selectValue());
+        } else if (structure.getClass() == BidirectionalList.class) {
+            ((BidirectionalList) structure).add(selectIndex(), selectValue());
+        } else structure.add(place, selectValue());
         displayStructure();
     }
 
@@ -169,10 +189,10 @@ public class View {
 
     private void deleteFromStructure(Place place) {
         View.printMessage(View.title("odejmowanie"));
-        if(structure.getClass() == Table.class )
-            ((Table)structure).subtract(selectIndex());
-        else if(structure.getClass() == BidirectionalList.class)
-            ((BidirectionalList)structure).subtract(selectValue());
+        if (structure.getClass() == Table.class)
+            ((Table) structure).subtract(selectIndex());
+        else if (structure.getClass() == BidirectionalList.class)
+            ((BidirectionalList) structure).subtract(selectValue());
         else structure.subtract(place, selectValue());
         displayStructure();
     }
@@ -187,11 +207,6 @@ public class View {
         printMessage(structure.info());
     }
 
-    public static int getRandom(Integer min, Integer max) {
-
-        return random.nextInt(max - min) + min;
-    }
-
     private void loadFromFile(Structure structure) {
         FileChooser fileChooser = new FileChooser();
         if (fileChooser.getPath() == null) return;
@@ -199,7 +214,7 @@ public class View {
             ArrayList<String> arrayList = new ArrayList<>();
             stream.forEach(arrayList::add);
             ArrayList<Integer> integers = new ArrayList<>();
-            for (int i=1;i<=Integer.parseInt(arrayList.get(0));i++){
+            for (int i = 1; i <= Integer.parseInt(arrayList.get(0)); i++) {
                 integers.add(Integer.parseInt(arrayList.get(i)));
             }
             integers.forEach(x -> structure.add(Place.END, x));
@@ -219,9 +234,5 @@ public class View {
         else if (i.equals(2)) place = Place.END;
         else if (i.equals(3)) place = Place.RANDOM;
         return place;
-    }
-
-    public static void main(String[] args) {
-        new View();
     }
 }

@@ -4,6 +4,9 @@ import addons.Settings;
 import addons.TreePrinter;
 import enums.Place;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Klasa reprezentująca drzewo BST.
  * Korzysta z interfejsu struktur.
@@ -27,109 +30,20 @@ public class BstTree implements Structure {
                 " na swojego lewego i prawego syna oraz na swojego ojca.";
     }
 
-    @Override
+    @Override //Wykorzystywane jest tylko pole number
     public void subtract(Place place, int number) throws IllegalArgumentException, IndexOutOfBoundsException {
-        if (size == 0) return;
-        Node parent = root;
-        Node current = root;
-        //Algorytm wyszukiwania w drzewie
-        boolean isLeftChild = false;
-        size--;
-        while (current.getInteger() != number) {
-            parent = current;
-            if (current.getLeft() == null && current.getRight() == null)
-                return;//Jeżeli nie znaleziono węzła, zakończ funkcję.
-            else if (current.getLeft() == null) { //Jeżeli istnieje tylko prawy węzeł
-                current = current.getRight(); //Idź do prawego węzła
-                isLeftChild = false; //Ustaw flagę lewego węzła na false;
-            } else if (current.getRight() == null) {//Jeżeli istnieje tylko lewy węzeł
-                current = current.getLeft();//Idź do lewego węzła
-                isLeftChild = true;//Ustaw flagę lewego węzła na true;
-            } else if (current.getInteger() > number) {//Jeżeli wartość current jest większa od szukanego numeru, należy szukać w lewej gałęzi.
-                isLeftChild = true; //Ustaw flagę lewego węzła na true
-                current = current.getLeft();//Idź do lewego węzła
-            } else {
-                isLeftChild = false;//Ustaw flagę lewego węzła na false
-                current = current.getRight();//Idź do prawego węzła
-            }
-        }
-        //Znaleziono węzeł.
-
-        //Przypadek 1: Znaleziony węzeł jest liściem.
-        if (current.getLeft() == null && current.getRight() == null) {
-            if (current == root) root = null; //Jeżeli znaleziono korzeń, usuń drzewo
-            if (isLeftChild) parent.setLeft(null);//Usuń powiązanie z liściem
-            else parent.setRight(null);//Usuń powiązanie z liściem
-        }
-        //Przypadek 2: Znaleziony węzeł ma jedno dziecko.
-        else if (current.getRight() == null) {//Przypisz rodzicowi dziecko węzła, na miejsce węzła.
-            if (current == root) root = current.getLeft();
-            else if (isLeftChild) parent.setLeft(current.getLeft());
-            else parent.setRight(current.getLeft());
-        } else if (current.getLeft() == null) {
-            if (current == root) root = current.getRight();
-            else if (isLeftChild) parent.setLeft(current.getRight());
-            else parent.setRight(current.getRight());
-        }
-        //Przypadek 3: Znaleziony węzeł ma oba dzieci.
-        else if (current.getLeft() != null && current.getRight() != null) {
-            Node successor = getSuccessor(current);//Znajdź następce
-            successor.setLeft(current.getLeft());
-            successor.setRight(current.getRight());
-            if (current == root)
-                root = successor;//Jeżeli usuwany węzeł jest korzeniem, wstaw na miejsce korzenia następce
-            else if (isLeftChild) parent.setLeft(successor);//Wstaw na miejsce węzła następce
-            else parent.setRight(successor);
-        }
-        if(Settings.x) DSW();//Algorytm sortujący drzewo
+        delete(search(root, number));
     }
 
-    @Override
+    @Override //Wykorzystywane jest tylko pole number
     public void add(Place place, int number) throws IllegalArgumentException {
-        Node newNode = new Node(null, null, number);
-        size++;
-        if (root == null) {
-            root = newNode;
-            return;
-        }
-        Node current = root;
-        Node parent;
-        while (true) {
-            parent = current;
-            if (number < current.getInteger()) {//Jeżeli wstawiany numer jest mniejszy od przeszukiwanego węzła, idź w lewo
-                current = current.getLeft();
-                if (current == null) {
-                    parent.setLeft(newNode);//Wstaw nowy węzeł jako lewe dziecko
-                    if(Settings.x) DSW();//Algorytm sortujący drzewo
-                    return;
-                }
-            } else {//Inaczej, idź w prawo
-                current = current.getRight();
-                if (current == null) {
-                    parent.setRight(newNode);//Wstaw węzeł jako prawe dziecko
-                    if(Settings.x) DSW();//Algorytm sortujący drzewo
-                    return;
-                }
-            }
-        }
+        insert(new Node(number));
     }
 
     @Override
     public boolean find(int find) {
-        if (root==null) return false;
-        Node current = root;
-        while (current.getInteger() != find) {
-            if (current.getLeft() == null && current.getRight() == null) return false;
-            else if (current.getInteger() < find){
-                if(current.getRight()==null)return false;
-                current=current.getRight();//Jeżeli wartość current jest mniejsza od szukanego numeru, należy szukać w prawej gałęzi.
-            }
-            else{
-                if (current.getLeft()==null) return false;
-                current = current.getLeft();
-            }
-        }
-        return true;
+        Node node = search(root, find);
+        return node != null;
     }
 
     @Override
@@ -153,60 +67,72 @@ public class BstTree implements Structure {
         size = 0;
     }
 
-    /**
-     * Funkcja pozwalająca znaleźć najmniejszy element z szukanego fragmentu drzewa.
-     *
-     * @param node Korzeń, z którego rozpoczyna się szukanie.
-     * @return Zwraca najmniejszy element z szukanego fragmentu drzewa.
-     */
-    private Node getSuccessor(Node node) {
-        if (node == null) return null;
-
-        if (node.getRight() != null) {
-            Node successor = node.getRight();
-            Node successorParent;
-            Node current = node.getRight();
-            do {//Idziemy do lewego liścia poddrzewa prawego węzła.
-                successorParent = successor;
-                successor = current;
-                current = current.getLeft();
-            } while (current != null);
-            if (successor.getRight() != null) { //Przenosimy prawe dziecko następnika do lewego dziecka rodzica następnika
-                successorParent.setLeft(successor.getRight());
-                successor.setRight(null);
-            }else successorParent.setLeft(null);
-            return successor;//Nie potrzebujemy sprawdzać kolejnych dwóch przypadków, ponieważ drzewo jest sortowane po każdym dodaniu/odejmowaniu.
-        } else return node;
+    private Node search(Node node, int key) {
+        if (node == null || node.getValue() == key) return node;
+        if (key < node.getValue()) return search(node.getLeft(), key);
+        return search(node.getRight(), key);
     }
 
-    /**
-     * Funkcja wywołująca algorytm DSW.
-     */
-    private void DSW() {
-        if (root != null) {
-            Node grandParent = null;
-            Node parent = root;
-            Node leftChild;
-            while (parent != null) {//Rozwijanie drzewa w prawo.
-                leftChild = parent.getLeft();
-                if (leftChild != null) {
-                    grandParent = rotateRight(grandParent, parent, leftChild);
-                    parent = leftChild;
-                } else {
-                    grandParent = parent;
-                    parent = parent.getRight();
-                }
-            }
-            int m = (1 << MSB(size + 1)) - 1;//Największa potęga dwójki, mniejsza niż n;
-            makeRotations(size - m);//Zwijanie drzewa.
-            while (m > 1) makeRotations(m /= 2);//Zwijanie drzewa.
+    private Node getMinKey(Node node) {
+        while (node.getLeft() != null) node = node.getLeft();
+        return node;
+    }
+
+    private void insert(Node node) {
+        size++;
+        Node y = null;
+        Node x = root;
+        while (x != null) {
+            y = x;
+            if (node.getValue() < x.getValue()) x = x.getLeft();
+            else x = x.getRight();
+        }
+        node.setParent(y);
+        if (y == null) root = node;
+        else if (node.getValue() < y.getValue()) y.setLeft(node);
+        else y.setRight(node);
+        if (Settings.x) DSW();
+    }
+
+
+    private Node getSuccessor(Node node) {
+        if (node.getRight() != null) return getMinKey(node.getRight());
+        Node temp = node.getParent();
+        while (temp != null && temp.getLeft() != node) {
+            node = temp;
+            temp = temp.getParent();
+        }
+        return temp;
+    }
+
+
+    private void delete(Node node) {
+        if(node==null)return;
+        size--;
+        Node x, y;
+        if (node.getLeft() == null || node.getRight() == null) y = node;
+        else y = getSuccessor(node);
+        if (y.getLeft() != null) x = y.getLeft();
+        else x = y.getRight();
+        if (x != null) x.setParent(y.getParent());
+        if (y.getParent() == null) root = x;
+        else if (y == y.getParent().getLeft()) y.getParent().setLeft(x);
+        else y.getParent().setRight(x);
+        if (y != node) node.setValue(y.getValue());
+        if (Settings.x) DSW();
+    }
+
+    private void createLinearTree() {
+        Node tmp = root;
+        while (tmp != null) {
+            if (tmp.getLeft() != null) {
+                rotateRight(tmp);
+                tmp = tmp.getParent();
+            } else tmp = tmp.getRight();
+
         }
     }
 
-    /**
-     * Funkcja zwracająca najbardziej znaczący bit.
-     * Indeks najmniej znaczącego bitu to 0.
-     */
     private int MSB(int n) {
         int ndx = 0;
         while (1 < n) {
@@ -216,58 +142,78 @@ public class BstTree implements Structure {
         return ndx;
     }
 
-    /**
-     * Funkcja przywracająca drzewu pierwotny kształt poprzez rotacje w lewo.
-     *
-     * @param bound Parametr okreśaljący ilość rotacji w lewo.
-     */
-    private void makeRotations(int bound) {
-        Node grandParent = null;
-        Node parent = root;
-        Node child = root.getRight();
-        for (; bound > 0; bound--) {
-            try {
-                if (child != null) {
-                    rotateLeft(grandParent, parent, child);
-                    grandParent = child;
-                    parent = grandParent.getRight();
-                    child = parent.getRight();
-                } else break;
-            } catch (NullPointerException convenient) {
-                break;
+    private int calculateM(int size) {
+        return (1 << MSB(size + 1)) - 1;
+    }
+
+    private void createBalancedTree() {
+        int m = calculateM(size);
+        List<Node> nodeList = new ArrayList<>();
+        Node temp = root;
+        for (int i = 0; i < size - m; i++) {
+            nodeList.add(temp);
+            temp = temp.getRight().getRight();
+            if (temp == null) break;
+        }
+        nodeList.forEach(this::rotateLeft);
+        while (m > 1) {
+            nodeList.clear();
+            temp = root;
+            m = (int) Math.floor(m / 2);
+            for (int i = 0; i < m; i++) {
+                nodeList.add(temp);
+                temp = temp.getRight().getRight();
             }
+            nodeList.forEach(this::rotateLeft);
         }
     }
 
-    /**
-     * Funkcja pozwalająca obrócić węzeł w lewo.
-     *
-     * @param grandParent Dziadek węzła.
-     * @param parent      Rodzic węzła.
-     * @param rightChild  Prawe dziecko węzła.
-     */
-    private void rotateLeft(Node grandParent, Node parent, Node rightChild) {
-        if (grandParent != null) grandParent.setRight(rightChild);
-        else root = rightChild;
-        parent.setRight(rightChild.getLeft());
-        rightChild.setLeft(parent);
-    }
 
     /**
-     * Funkcja pozwalająca obrócić węzeł w prawo.
-     *
-     * @param grandParent Dziadek węzła.
-     * @param parent      Rodzic węzła.
-     * @param leftChild   Lewe dziecko węzła.
-     * @return Zwraca dziadka węzła.
+     * Funkcja wywołująca algorytm DSW.
      */
-    private Node rotateRight(Node grandParent, Node parent, Node leftChild) {
-        if (grandParent != null) grandParent.setRight(leftChild);
-        else root = leftChild;
-        parent.setLeft(leftChild.getRight());
-        leftChild.setRight(parent);
-        return grandParent;
+    public void DSW() {
+        if (root != null) {
+            createLinearTree();
+            createBalancedTree();
+        }
     }
 
+    private boolean isRightChild(Node node) {
+        return node.getParent().getRight() == node;
+    }
+
+    private boolean isLeftChild(Node node) {
+        return node.getParent().getLeft() == node;
+    }
+
+    private void rotateRight(Node node) {
+        if (node.getParent() == null) {
+            root = node.getLeft();
+            node.getLeft().setParent(null);
+        } else {
+            if (isRightChild(node)) node.getParent().setRight(node.getLeft());
+            if (isLeftChild(node)) node.getParent().setLeft(node.getLeft());
+            node.getLeft().setParent(node.getParent());
+        }
+        node.setParent(node.getLeft());
+        node.setLeft(node.getParent().getRight());
+        if (node.getParent().getRight() != null) node.getParent().getRight().setParent(node);
+        node.getParent().setRight(node);
+    }
+
+    private void rotateLeft(Node node) {
+        if (node.getParent() == null) {
+            root = node.getRight();
+            node.getRight().setParent(null);
+        } else {
+            if (isRightChild(node)) node.getParent().setRight(node.getRight());
+            if (isLeftChild(node)) node.getParent().setLeft(node.getRight());
+            node.getRight().setParent(node.getParent());
+        }
+        node.setParent(node.getRight());
+        node.setRight(node.getParent().getLeft());
+        if (node.getParent().getLeft() != null) node.getParent().getLeft().setParent(node);
+        node.getParent().setLeft(node);
+    }
 }
-

@@ -1,7 +1,7 @@
 package structures;
 
-import enums.Place;
 import addons.View;
+import enums.Place;
 
 /**
  * Klasa reprezentująca tablice.
@@ -113,14 +113,14 @@ public class Table implements Structure {
     }
 
     public void add(int index, int value) {
-        if (table!=null&&index > table.length) return;
-        if ((table == null || table.length == 0)&&index==0) {//Jeżeli tablica nie istnieje, stwórz nową
+        if (table != null && index > table.length) return;
+        if ((table == null || table.length == 0) && index == 0) {//Jeżeli tablica nie istnieje, stwórz nową
             table = new int[1];
             table[0] = value;
-        }else if(table==null&&index!=0){
+        } else if (table == null && index != 0) {
             return;
-        }else{
-            int[] x = new int[table.length+1];//Tworzenie tablicy większej o 1
+        } else {
+            int[] x = new int[table.length + 1];//Tworzenie tablicy większej o 1
             for (int i = 0; i < index; i++)
                 x[i] = table[i];//Przekopiowywanie tablicy od indeksu 0 do wylosowanego indeksu-1
             x[index] = value;//Wstawianie nowej liczby
@@ -133,7 +133,7 @@ public class Table implements Structure {
     }
 
     public void subtract(int index) {
-        if(table==null)return;
+        if (table == null) return;
         else if (index > table.length - 1) return;
         else if (table.length == 1)
             clear(); //Sprawdzanie, czy tablica zawiera tylko jeden rekord, jeżeli tak, usuwanie tablicy

@@ -1,6 +1,5 @@
 package structures;
 
-import addons.Settings;
 import addons.View;
 import enums.Place;
 import enums.PlaceOnList;
@@ -119,7 +118,7 @@ public class BidirectionalList implements Structure {
         if (size == 0) return false;
         Node node = firstElement;
         for (int i = 0; i < size; i++) {
-            if (node.getInteger() == find) return true;//Sprawdź, czy sprawdzany węzeł == szukany węzeł
+            if (node.getValue() == find) return true;//Sprawdź, czy sprawdzany węzeł == szukany węzeł
             node = node.getRight();//Idź do prawego węzła
         }
         return false;
@@ -127,19 +126,19 @@ public class BidirectionalList implements Structure {
 
     @Override
     public String show() {
-        if (size == 0||firstElement==null||lastElement==null) return "";
+        if (size == 0 || firstElement == null || lastElement == null) return "";
         StringBuilder sb = new StringBuilder();
 
 
         Node list = firstElement;
         do {
-            sb.append(" ").append(list.getInteger()).append(" ");
+            sb.append(" ").append(list.getValue()).append(" ");
             list = list.getRight();
         } while (list != null);
         sb.append("\n");
         list = lastElement;
         do {
-            sb.append(" ").append(list.getInteger()).append(" ");
+            sb.append(" ").append(list.getValue()).append(" ");
             list = list.getLeft();
         } while (list != null);
 
@@ -170,8 +169,8 @@ public class BidirectionalList implements Structure {
     }
 
     public void add(int index, int value) {
-        if (firstElement!=null&&lastElement!=null&&index > size) return;
-        if (firstElement==null||lastElement==null||size == 0) {//Jeżeli rozmiar tablicy==0 Ustaw nowy węzeł jako pierwszy i ostatni element
+        if (firstElement != null && lastElement != null && index > size) return;
+        if (firstElement == null || lastElement == null || size == 0) {//Jeżeli rozmiar tablicy==0 Ustaw nowy węzeł jako pierwszy i ostatni element
             clear();
             Node list = new Node(value);
             firstElement = list;
@@ -198,15 +197,15 @@ public class BidirectionalList implements Structure {
     }
 
     public void subtract(int value) {
-        if(firstElement==null||lastElement==null)clear();
+        if (firstElement == null || lastElement == null) clear();
         else if (firstElement.getRight() == null || lastElement.getLeft() == null) clear();
         else {
             Node node = firstElement;
             for (int i = 0; i < size; i++) {
-                if (node.getInteger() == value) break;//Sprawdź, czy sprawdzany węzeł == szukany węzeł
+                if (node.getValue() == value) break;//Sprawdź, czy sprawdzany węzeł == szukany węzeł
                 node = node.getRight();//Idź do prawego węzła
             }
-            if(node==null)return;
+            if (node == null) return;
             if (node == firstElement) {//Jeżeli wylosowano pierwszy element, postępuj tak jak wyżej
                 firstElement = firstElement.getRight();
                 firstElement.setLeft(null);
