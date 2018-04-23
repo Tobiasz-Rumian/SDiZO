@@ -14,8 +14,9 @@ import java.util.List;
  */
 public class BinaryHeap implements Structure {
     private static final int length = 2000000; //przechowuje informacje o wielkości całej tablicy
-    private int heapSize = 0; //przechowuje informacje o wielkości kopca
     private static final int[] heapTable = new int[length]; //tablica przechowująca kopiec
+    private int heapSize = 0; //przechowuje informacje o wielkości kopca
+
     /*
     numer lewego syna = 2k + 1
     numer prawego syna = 2k + 2
@@ -34,15 +35,15 @@ public class BinaryHeap implements Structure {
 
     @Override
     public void subtract(Place place, int number) throws IllegalArgumentException, IndexOutOfBoundsException {
-        if (heapSize==0) return;
-        if(heapSize==1) clear();
-        else{
-            int index=-1;
-            for(int i=0;i<heapTable.length;i++) if (heapTable[i] == number) index=i;
-            if(index==-1) return;
+        if (heapSize == 0) return;
+        if (heapSize == 1) clear();
+        else {
+            int index = -1;
+            for (int i = 0; i < heapTable.length; i++) if (heapTable[i] == number) index = i;
+            if (index == -1) return;
             heapTable[index] = heapTable[heapSize - 1];
             heapSize--;
-            if(heapTable[(index - 1) / 2]<heapTable[index]) heapifyUp(index);
+            if (heapTable[(index - 1) / 2] < heapTable[index]) heapifyUp(index);
             else heapifyDown(index);
         }
     }
@@ -51,7 +52,7 @@ public class BinaryHeap implements Structure {
     public void add(Place place, int number) throws IllegalArgumentException {
         heapTable[heapSize] = number;
         if (heapSize == 0) heapSize++;
-        else{
+        else {
             heapifyUp(heapSize);//Sortujemy kopiec w górę
             heapSize++;//Zwiększamy rozmiar kopca o 1
         }
@@ -59,7 +60,7 @@ public class BinaryHeap implements Structure {
 
     @Override
     public boolean find(int find) {
-        for(int i=0;i<heapSize;i++) if (heapTable[i]==find) return true;
+        for (int i = 0; i < heapSize; i++) if (heapTable[i] == find) return true;
         return false;
     }
 
@@ -81,7 +82,7 @@ public class BinaryHeap implements Structure {
                     next.add(null);
                     next.add(null);
                 } else {
-                    String aa =Integer.toString(heapTable[n]);
+                    String aa = Integer.toString(heapTable[n]);
                     line.add(aa);
                     if (aa.length() > widest) widest = aa.length();
                     next.add((2 * n) + 1);
@@ -145,12 +146,13 @@ public class BinaryHeap implements Structure {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "Kopiec binarny";
     }
 
     /**
      * Funkcja układająca kopiec po dodaniu nowego elementu.
+     *
      * @param index indeks nowego elementu.
      */
     private void heapifyUp(int index) {
@@ -163,8 +165,10 @@ public class BinaryHeap implements Structure {
         }
         heapifyUp(parentIndex);//Rekurencyjnie przechodzi w górę kopca
     }
+
     /**
      * Funkcja układająca kopiec po usunięciu elementu.
+     *
      * @param index indeks usuwanego elementu.
      */
     private void heapifyDown(int index) {
@@ -173,7 +177,7 @@ public class BinaryHeap implements Structure {
         int leftChildIndex = (2 * index) + 1;
         int rightChildIndex = (2 * index) + 2;
         int biggestChild = Integer.max(heapTable[leftChildIndex], heapTable[rightChildIndex]);//Sprawdza, które dziecko jest większe
-        if (biggestChild==heapTable[leftChildIndex]) biggestChild = leftChildIndex;
+        if (biggestChild == heapTable[leftChildIndex]) biggestChild = leftChildIndex;
         else biggestChild = rightChildIndex;
         if (value <= heapTable[biggestChild]) {//Jeżeli wartość jest mniejsza od sprawdzanego węzła, zamienia je miejscami
             heapTable[index] = heapTable[biggestChild];

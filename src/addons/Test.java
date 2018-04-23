@@ -8,13 +8,13 @@ import java.math.RoundingMode;
 import java.util.Random;
 
 import static addons.Settings.*;
-import static addons.Settings.setSettings;
 import static addons.View.printMessage;
 
 public class Test {
-private static Random random = new Random();
-private static Results results = new Results();
-    public static void test(int task, Place place,Structure structure) {
+    private static Random random = new Random();
+    private static Results results = new Results();
+
+    public static void test(int task, Place place, Structure structure) {
         TimeTracker tracker = new TimeTracker();
         String label;
         BigDecimal resultTime = new BigDecimal(0);
@@ -32,7 +32,7 @@ private static Results results = new Results();
                         Table table = new Table();
                         table.addAll(populationGenerator.getPopulation());
                         table.subtract(Place.END, 0);
-                        int rand =random.nextInt();
+                        int rand = random.nextInt();
                         tracker.start();
                         table.add(place, rand);
                         resultTime = resultTime.add(tracker.getElapsedTime());
@@ -40,17 +40,17 @@ private static Results results = new Results();
                         if (place == Place.RANDOM) {
                             for (int j = 0; j < populationGenerator.getPopulation().length - 1; j++)
                                 structure.add(Place.END, populationGenerator.getPopulation()[j]);
-                            int add =  populationGenerator.getPopulation()[populationGenerator.getPopulation().length - 1];
+                            int add = populationGenerator.getPopulation()[populationGenerator.getPopulation().length - 1];
                             tracker.start();
-                            structure.add(place,add);
+                            structure.add(place, add);
                             resultTime = resultTime.add(tracker.getElapsedTime());
                             structure.clear();
                         } else {
-                            for (int j = 0; j < populationGenerator.getPopulation().length-1; j++)
+                            for (int j = 0; j < populationGenerator.getPopulation().length - 1; j++)
                                 structure.add(place, populationGenerator.getPopulation()[j]);
-                            int add = populationGenerator.getPopulation()[populationGenerator.getPopulation().length-1];
+                            int add = populationGenerator.getPopulation()[populationGenerator.getPopulation().length - 1];
                             tracker.start();
-                            structure.add(place,add);
+                            structure.add(place, add);
                             resultTime = resultTime.add(tracker.getElapsedTime());
                             structure.clear();
                         }
@@ -126,7 +126,7 @@ private static Results results = new Results();
             case 5://Pokaż wyniki
                 printMessage(results.show());
                 break;
-            case 0://Zakończ test
+            case 0://Zakończ test.txt
                 break;
         }
     }
@@ -146,11 +146,10 @@ private static Results results = new Results();
      * Funkcja pozwalająca na wykonanie pełnych testów.
      */
     public static void fullTest() {
-        int[] howMany = {100000,200000,300000, 400000,500000, 600000,700000, 800000,900000, 1000000};
-        Structure[] structures = {new Table(),new BidirectionalList(), new BinaryHeap(), new BstTree()};//new Table(),new BidirectionalList(), new BinaryHeap(), new BstTree()
+        int[] howMany = {100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000};
+        Structure[] structures = {new Table(), new BidirectionalList(), new BinaryHeap(), new BstTree()};//new Table(),new BidirectionalList(), new BinaryHeap(), new BstTree()
         Place[] places = {Place.START, Place.END, Place.RANDOM};
-        int[] tests = {1,2,3};// Dodawanie, odejmowanie, szukanie
-
+        int[] tests = {1, 2, 3};// Dodawanie, odejmowanie, szukanie
 
 
         for (Structure structure : structures) {
@@ -159,14 +158,14 @@ private static Results results = new Results();
                     for (Place place : places) {
                         for (int how : howMany) {
                             setSettings(how, getHowManyRepeats());
-                            test(test, place,structure);
+                            test(test, place, structure);
                         }
                         results.save();
                     }
                 } else {
                     for (int how : howMany) {
                         setSettings(how, getHowManyRepeats());
-                        test(test, Place.NULL,structure);
+                        test(test, Place.NULL, structure);
                     }
                     results.save();
                 }

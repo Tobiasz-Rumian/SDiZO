@@ -12,9 +12,8 @@ public class TreePrinter {
      *
      * @param root tree root node
      */
-    public static String print(Node root)
-    {
-        StringBuilder stringBuilder=new StringBuilder();
+    public static String print(Node root) {
+        StringBuilder stringBuilder = new StringBuilder();
         List<List<String>> lines = new ArrayList<>();
 
         List<Node> level = new ArrayList<>();
