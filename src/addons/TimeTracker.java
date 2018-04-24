@@ -1,6 +1,7 @@
 package addons;
 
 import java.math.BigDecimal;
+import java.time.LocalTime;
 
 /**
  * Klasa pozwalająca na śledzenie czasu w milisekundach.
@@ -8,14 +9,14 @@ import java.math.BigDecimal;
  * @author Tobiasz Rumian
  */
 class TimeTracker {
-    private Long startTime;
-    private Long endTime;
+    public static final int NANOSECONDS_IN_SECOND = 1000000000;
+    private LocalTime startTime;
 
     /**
      * Funkcja rozpoczynająca odliczanie czasu czasu.
      */
     void start() {
-        startTime = System.nanoTime();
+        startTime = LocalTime.now();
     }
 
     /**
@@ -24,7 +25,13 @@ class TimeTracker {
      * @return Zwraca różnicę  czasów.
      */
     BigDecimal getElapsedTime() {
-        endTime = System.nanoTime();
-        return BigDecimal.valueOf(endTime - startTime);
+        LocalTime endTime = LocalTime.now();
+        BigDecimal endTimeInNanos = BigDecimal.valueOf(endTime.getSecond())
+                .multiply(BigDecimal.valueOf(NANOSECONDS_IN_SECOND))
+                .add(BigDecimal.valueOf( endTime.getNano()));
+        BigDecimal startTimeInNanos = BigDecimal.valueOf(startTime.getSecond())
+                .multiply(BigDecimal.valueOf(NANOSECONDS_IN_SECOND))
+                .add(BigDecimal.valueOf(startTime.getNano()));
+        return endTimeInNanos.subtract(startTimeInNanos);
     }
 }
