@@ -6,5 +6,5 @@ package enums;
  * @author Tobiasz Rumian.
  */
 public enum PlaceOnList {
-    LEFT, RIGHT
+	LEFT, RIGHT
 }

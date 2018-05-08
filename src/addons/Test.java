@@ -13,17 +13,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import structures.BidirectionalList;
-import structures.BinaryHeap;
-import structures.BstTree;
 import structures.Structure;
 import structures.Table;
 
 public class Test {
 
+	private final TimeTracker tracker = new TimeTracker();
 	private Random random = new Random();
 	private Results results = new Results();
 	private Structure structure;
-	private final TimeTracker tracker = new TimeTracker();
 
 	public Test(int task, Place place, Structure structure) {
 		this.structure = structure;
@@ -51,11 +49,47 @@ public class Test {
 		}
 	}
 
+	/**
+	 * Funkcja pozwalająca na wykonanie pełnych testów.
+	 */
+	public static void fullTest() {
+		int[] howMany = { 100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000 };
+		List<Structure> structures = Arrays.asList(new Table());//, new BidirectionalList(), new BinaryHeap(), new BstTree()
+		List<Place> places = Arrays.asList(Place.START);//, Place.END, Place.RANDOM
+		List<Integer> tests = Arrays.asList(1);//Dodawanie, odejmowanie, szukanie , 2, 3
+		final Results results = new Results();
+		structures.forEach(structure -> tests.forEach(test -> {
+			if (isTableOrBidirectionalListAndTestNotThree(structure, test)) {
+				places.forEach(place -> testMultipleTimes(howMany, results, structure, test, place));
+			} else {
+				testMultipleTimes(howMany, results, structure, test, Place.NULL);
+			}
+		}));
+		results.save();
+		results.clear();
+	}
+
+	private static void testMultipleTimes(int[] howMany, Results results, Structure structure, int test, Place place) {
+		Test currentTest;
+		for (int how : howMany) {
+			setSettings(how, getHowManyRepeats());
+			currentTest = new Test(test, place, structure);
+			currentTest.getResults().getResults().forEach(results::add);
+		}
+	}
+
+	private static boolean isTableOrBidirectionalListAndTestNotThree(Structure structure, int test) {
+		boolean isTable = structure.getClass() == Table.class;
+		boolean isBidirectionalList = structure.getClass() == BidirectionalList.class;
+		boolean isTestNotEqualThree = test != 3;
+		return (isTable && isTestNotEqualThree) || (isBidirectionalList && isTestNotEqualThree);
+	}
+
 	private void findInStructureTest(BigDecimal resultTime) {
 		PopulationGenerator populationGenerator;
 		String label;
 		for (int i = 0; i < getHowManyRepeats(); i++) {
-			printProgress(i," Wyszukiwanie");
+			printProgress(i, " Wyszukiwanie");
 			populationGenerator = new PopulationGenerator();
 			if (isTable()) {
 				((Table) structure).addAll(populationGenerator.getPopulation());
@@ -89,21 +123,21 @@ public class Test {
 		return resultTime;
 	}
 
-	private void printProgress(int i,String text) {
-		printMessage(showProgress(i, getHowManyRepeats()) + "     " + structure.toString() + "  " + getHowManyElements()
-			+ text);
+	private void printProgress(int i, String text) {
+		printMessage(
+			showProgress(i, getHowManyRepeats()) + "     " + structure.toString() + "  " + getHowManyElements() + text);
 	}
 
 	private void deleteFromStructureTest(Place place, BigDecimal resultTime) {
 		PopulationGenerator populationGenerator;
 		String label;
 		for (int i = 0; i < getHowManyRepeats(); i++) {
-			printProgress(i," Odejmowanie");
+			printProgress(i, " Odejmowanie");
 
 			populationGenerator = new PopulationGenerator();
 			if (isTable()) {
-				((Table)structure).addAll(populationGenerator.getPopulation());
-				doDeleteTest(place,resultTime);
+				((Table) structure).addAll(populationGenerator.getPopulation());
+				doDeleteTest(place, resultTime);
 			} else {
 				for (int k = 0; k < populationGenerator.getPopulation().length; k++) {
 					structure.add(Place.END, populationGenerator.getPopulation()[k]);
@@ -129,13 +163,13 @@ public class Test {
 		PopulationGenerator populationGenerator;
 		String label;
 		for (int i = 0; i < getHowManyRepeats(); i++) {
-			printProgress(i," Dodawanie");
+			printProgress(i, " Dodawanie");
 
 			populationGenerator = new PopulationGenerator();
 			if (isTable()) {
-				((Table)structure).addAll(populationGenerator.getPopulation());
+				((Table) structure).addAll(populationGenerator.getPopulation());
 				structure.subtract(Place.END, 0);
-				resultTime=doAddTest(place,resultTime,random.nextInt());
+				resultTime = doAddTest(place, resultTime, random.nextInt());
 			} else {
 				if (isRandom(place)) {
 					fillStructure(Place.END, populationGenerator);
@@ -189,41 +223,5 @@ public class Test {
 
 	public Results getResults() {
 		return results;
-	}
-
-	/**
-	 * Funkcja pozwalająca na wykonanie pełnych testów.
-	 */
-	public static void fullTest() {
-		int[] howMany = { 100000, 200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000 };
-		List<Structure> structures = Arrays.asList(new Table());//, new BidirectionalList(), new BinaryHeap(), new BstTree()
-		List<Place> places = Arrays.asList(Place.START);//, Place.END, Place.RANDOM
-		List<Integer> tests = Arrays.asList(1);//Dodawanie, odejmowanie, szukanie , 2, 3
-		final Results results = new Results();
-		structures.forEach(structure -> tests.forEach(test -> {
-			if (isTableOrBidirectionalListAndTestNotThree(structure, test)) {
-				places.forEach(place -> testMultipleTimes(howMany, results, structure, test, place));
-			} else {
-				testMultipleTimes(howMany, results, structure, test, Place.NULL);
-			}
-		}));
-		results.save();
-		results.clear();
-	}
-
-	private static void testMultipleTimes(int[] howMany, Results results, Structure structure, int test, Place place) {
-		Test currentTest;
-		for (int how : howMany) {
-			setSettings(how, getHowManyRepeats());
-			currentTest = new Test(test, place, structure);
-			currentTest.getResults().getResults().forEach(results::add);
-		}
-	}
-
-	private static boolean isTableOrBidirectionalListAndTestNotThree(Structure structure, int test) {
-		boolean isTable = structure.getClass() == Table.class;
-		boolean isBidirectionalList = structure.getClass() == BidirectionalList.class;
-		boolean isTestNotEqualThree = test != 3;
-		return (isTable && isTestNotEqualThree) || (isBidirectionalList && isTestNotEqualThree);
 	}
 }

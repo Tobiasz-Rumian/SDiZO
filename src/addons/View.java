@@ -1,8 +1,6 @@
 package addons;
 
 import enums.Place;
-import structures.*;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -10,6 +8,11 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.stream.Stream;
+import structures.BidirectionalList;
+import structures.BinaryHeap;
+import structures.BstTree;
+import structures.Structure;
+import structures.Table;
 
 /**
  * Klasa reprezentująca widok
@@ -17,222 +20,241 @@ import java.util.stream.Stream;
  * @author Tobiasz Rumian.
  */
 public class View {
-    private static Random random = new Random();//Generator pseudolosowy
-    private Structure structure; // Struktura, na której odbywają się wszystkie zadania.
-    private Results results = new Results();//Obiekt zawierający wyniki testów.
 
-    private View() {
-        printMessage(Messages.messageStart());
-        while (true) {
-            printMessage(Messages.messageMainMenu());
-            switch (select("Podaj numer zadania:", 0, 5)) {
-                case 1:
-                    structure = new Table();
-                    break;
-                case 2:
-                    structure = new BidirectionalList();
-                    break;
-                case 3:
-                    structure = new BinaryHeap();
-                    break;
-                case 4:
-                    structure = setBstTree();
-                    break;
-                case 5:
-                    Test.fullTest();
-                    return;
-                case 0:
-                    return;
-            }
-            selectTask();
-        }
-    }
+	private static Random random = new Random();//Generator pseudolosowy
+	private Structure structure; // Struktura, na której odbywają się wszystkie zadania.
+	private Results results = new Results();//Obiekt zawierający wyniki testów.
 
-    static String title(String title) {
-        return "===========" + title.toUpperCase() + "===========\n";
-    }
+	private View() {
+		printMessage(Messages.messageStart());
+		while (true) {
+			printMessage(Messages.messageMainMenu());
+			switch (select("Podaj numer zadania:", 0, 5)) {
+			case 1:
+				structure = new Table();
+				break;
+			case 2:
+				structure = new BidirectionalList();
+				break;
+			case 3:
+				structure = new BinaryHeap();
+				break;
+			case 4:
+				structure = setBstTree();
+				break;
+			case 5:
+				Test.fullTest();
+				return;
+			case 0:
+				return;
+			}
+			selectTask();
+		}
+	}
 
-    static int select(String message, Integer min, Integer max) {
-        do {
-            try {
-                printMessage(message);
-                Scanner in = new Scanner(System.in);
-                int i = Integer.parseInt(in.nextLine());
-                if (i <= max && i >= min) return i;
-            } catch (NumberFormatException ignored) {
-            }
-        } while (true);
-    }
+	static String title(String title) {
+		return "===========" + title.toUpperCase() + "===========\n";
+	}
 
-    static Integer select(String message) {
-        while (true) {
-            try {
-                printMessage(message);
-                Scanner in = new Scanner(System.in);
-                return Integer.parseInt(in.nextLine());
-            } catch (NumberFormatException ignored) {
-            }
-        }
-    }
+	static int select(String message, Integer min, Integer max) {
+		do {
+			try {
+				printMessage(message);
+				Scanner in = new Scanner(System.in);
+				int i = Integer.parseInt(in.nextLine());
+				if (i <= max && i >= min) {
+					return i;
+				}
+			} catch (NumberFormatException ignored) {
+			}
+		} while (true);
+	}
 
-    static void printMessage(String message) {
-        System.out.println(message + "\n");
-    }
+	static Integer select(String message) {
+		while (true) {
+			try {
+				printMessage(message);
+				Scanner in = new Scanner(System.in);
+				return Integer.parseInt(in.nextLine());
+			} catch (NumberFormatException ignored) {
+			}
+		}
+	}
 
-    static void printErrorMessage(String message) {
-        System.err.println(message + "\n");
-    }
+	static void printMessage(String message) {
+		System.out.println(message + "\n");
+	}
 
-    public static int getRandom(Integer min, Integer max) {
+	static void printErrorMessage(String message) {
+		System.err.println(message + "\n");
+	}
 
-        return random.nextInt(max - min) + min;
-    }
+	public static int getRandom(Integer min, Integer max) {
 
-    public static void main(String[] args) {
-        new View();
-    }
+		return random.nextInt(max - min) + min;
+	}
 
-    private Structure setBstTree() {
-        printMessage("Z równoważeniem? (0-false,1-true)");
-        int z = View.select("Podaj numer:", 0, 1);
-        Settings.x = z != 0;
-        return new BstTree();
-    }
+	public static void main(String[] args) {
+		new View();
+	}
 
-    /**
-     * Funkcja pozwalająca na wybranie zadania wykonywanego na strukturze.
-     */
-    private void selectTask() {
-        while (true) {
-            printMessage(Messages.messageTask());
-            Place place = Place.NULL;
+	private Structure setBstTree() {
+		printMessage("Z równoważeniem? (0-false,1-true)");
+		int z = View.select("Podaj numer:", 0, 1);
+		Settings.x = z != 0;
+		return new BstTree();
+	}
 
-            switch (View.select("Podaj numer zadania:", 0, 8)) {
-                case 1:
-                    displayInfo();
-                    break;
-                case 2:
-                    readFromFile();
-                    break;
-                case 3:
-                    deleteFromStructure(place);
-                    break;
-                case 4:
-                    addToStructure(place);
-                    break;
-                case 5:
-                    findInStructure();
-                    break;
-                case 6:
-                    displayStructure();
-                    break;
-                case 7:
-                    test(place);
-                    break;
-                case 8:
-                    ((BstTree) structure).DSW();
-                    System.out.println(structure.show());
-                    break;
-                case 0:
-                    return;
-            }
-        }
-    }
+	/**
+	 * Funkcja pozwalająca na wybranie zadania wykonywanego na strukturze.
+	 */
+	private void selectTask() {
+		while (true) {
+			printMessage(Messages.messageTask());
+			Place place = Place.NULL;
 
-    private void test(Place place) {
-        clearResults();
-        while (true) {
-            printMessage(Messages.messageTest());
-            int select = View.select("Podaj numer zadania:", 0, 5);
-            if (select == 0) break;
-            if (select == 1 || select == 2) {
-                if (structure.getClass() == Table.class || structure.getClass() == BidirectionalList.class)
-                    place = choosePlace("Podaj miejsce, w które chcesz wstawiać");
-                else place = Place.NULL;
-            }
-            new Test(select, place, structure);
-        }
-    }
+			switch (View.select("Podaj numer zadania:", 0, 8)) {
+			case 1:
+				displayInfo();
+				break;
+			case 2:
+				readFromFile();
+				break;
+			case 3:
+				deleteFromStructure(place);
+				break;
+			case 4:
+				addToStructure(place);
+				break;
+			case 5:
+				findInStructure();
+				break;
+			case 6:
+				displayStructure();
+				break;
+			case 7:
+				test(place);
+				break;
+			case 8:
+				((BstTree) structure).DSW();
+				System.out.println(structure.show());
+				break;
+			case 0:
+				return;
+			}
+		}
+	}
 
-    private void clearResults() {
-        results.clear();
-    }
+	private void test(Place place) {
+		clearResults();
+		while (true) {
+			printMessage(Messages.messageTest());
+			int select = View.select("Podaj numer zadania:", 0, 5);
+			if (select == 0) {
+				break;
+			}
+			if (select == 1 || select == 2) {
+				if (structure.getClass() == Table.class || structure.getClass() == BidirectionalList.class) {
+					place = choosePlace("Podaj miejsce, w które chcesz wstawiać");
+				} else {
+					place = Place.NULL;
+				}
+			}
+			new Test(select, place, structure);
+		}
+	}
 
-    private void displayStructure() {
-        printMessage(structure.show());
-    }
+	private void clearResults() {
+		results.clear();
+	}
 
-    private void findInStructure() {
-        View.printMessage(View.title("znajdowanie"));
-        if (structure.find(View.select("Podaj liczbe"))) printMessage("Liczba znajduje się w strukturze");
-        else printErrorMessage("Liczba nie znajduje się w strukturze");
-        displayStructure();
-    }
+	private void displayStructure() {
+		printMessage(structure.show());
+	}
 
-    private void addToStructure(Place place) {
-        View.printMessage(View.title("dodawanie"));
-        if (structure.getClass() == Table.class) {
-            ((Table) structure).add(selectIndex(), selectValue());
-        } else if (structure.getClass() == BidirectionalList.class) {
-            ((BidirectionalList) structure).add(selectIndex(), selectValue());
-        } else structure.add(place, selectValue());
-        displayStructure();
-    }
+	private void findInStructure() {
+		View.printMessage(View.title("znajdowanie"));
+		if (structure.find(View.select("Podaj liczbe"))) {
+			printMessage("Liczba znajduje się w strukturze");
+		} else {
+			printErrorMessage("Liczba nie znajduje się w strukturze");
+		}
+		displayStructure();
+	}
 
-    private Integer selectValue() {
-        return select("Podaj wartość");
-    }
+	private void addToStructure(Place place) {
+		View.printMessage(View.title("dodawanie"));
+		if (structure.getClass() == Table.class) {
+			((Table) structure).add(selectIndex(), selectValue());
+		} else if (structure.getClass() == BidirectionalList.class) {
+			((BidirectionalList) structure).add(selectIndex(), selectValue());
+		} else {
+			structure.add(place, selectValue());
+		}
+		displayStructure();
+	}
 
-    private Integer selectIndex() {
-        return select("Podaj indeks");
-    }
+	private Integer selectValue() {
+		return select("Podaj wartość");
+	}
 
-    private void deleteFromStructure(Place place) {
-        View.printMessage(View.title("odejmowanie"));
-        if (structure.getClass() == Table.class)
-            ((Table) structure).subtract(selectIndex());
-        else if (structure.getClass() == BidirectionalList.class)
-            ((BidirectionalList) structure).subtract(selectValue());
-        else structure.subtract(place, selectValue());
-        displayStructure();
-    }
+	private Integer selectIndex() {
+		return select("Podaj indeks");
+	}
 
-    private void readFromFile() {
-        structure.clear();
-        loadFromFile(structure);
-        displayStructure();
-    }
+	private void deleteFromStructure(Place place) {
+		View.printMessage(View.title("odejmowanie"));
+		if (structure.getClass() == Table.class) {
+			((Table) structure).subtract(selectIndex());
+		} else if (structure.getClass() == BidirectionalList.class) {
+			((BidirectionalList) structure).subtract(selectValue());
+		} else {
+			structure.subtract(place, selectValue());
+		}
+		displayStructure();
+	}
 
-    private void displayInfo() {
-        printMessage(structure.info());
-    }
+	private void readFromFile() {
+		structure.clear();
+		loadFromFile(structure);
+		displayStructure();
+	}
 
-    private void loadFromFile(Structure structure) {
-        FileChooser fileChooser = new FileChooser();
-        if (fileChooser.getPath() == null) return;
-        try (Stream<String> stream = Files.lines(Paths.get(fileChooser.getPath()))) {
-            ArrayList<String> arrayList = new ArrayList<>();
-            stream.forEach(arrayList::add);
-            ArrayList<Integer> integers = new ArrayList<>();
-            for (int i = 1; i <= Integer.parseInt(arrayList.get(0)); i++) {
-                integers.add(Integer.parseInt(arrayList.get(i)));
-            }
-            integers.forEach(x -> structure.add(Place.END, x));
-        } catch (IOException e) {
-            printErrorMessage("Wystąpił błąd podczas ładowania pliku");
-        }
-    }
+	private void displayInfo() {
+		printMessage(structure.info());
+	}
 
-    private Place choosePlace(String label) {
-        Place place = Place.NULL;
-        View.printMessage("Gdzie odjac liczbe?");
-        View.printMessage("1. Poczatek");
-        View.printMessage("2. Koniec");
-        View.printMessage("3. Losowo");
-        Integer i = View.select(label, 1, 3);
-        if (i.equals(1)) place = Place.START;
-        else if (i.equals(2)) place = Place.END;
-        else if (i.equals(3)) place = Place.RANDOM;
-        return place;
-    }
+	private void loadFromFile(Structure structure) {
+		FileChooser fileChooser = new FileChooser();
+		if (fileChooser.getPath() == null) {
+			return;
+		}
+		try (Stream<String> stream = Files.lines(Paths.get(fileChooser.getPath()))) {
+			ArrayList<String> arrayList = new ArrayList<>();
+			stream.forEach(arrayList::add);
+			ArrayList<Integer> integers = new ArrayList<>();
+			for (int i = 1; i <= Integer.parseInt(arrayList.get(0)); i++) {
+				integers.add(Integer.parseInt(arrayList.get(i)));
+			}
+			integers.forEach(x -> structure.add(Place.END, x));
+		} catch (IOException e) {
+			printErrorMessage("Wystąpił błąd podczas ładowania pliku");
+		}
+	}
+
+	private Place choosePlace(String label) {
+		Place place = Place.NULL;
+		View.printMessage("Gdzie odjac liczbe?");
+		View.printMessage("1. Poczatek");
+		View.printMessage("2. Koniec");
+		View.printMessage("3. Losowo");
+		Integer i = View.select(label, 1, 3);
+		if (i.equals(1)) {
+			place = Place.START;
+		} else if (i.equals(2)) {
+			place = Place.END;
+		} else if (i.equals(3))
+			place = Place.RANDOM;
+		return place;
+	}
 }
