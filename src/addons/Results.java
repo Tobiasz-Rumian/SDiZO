@@ -54,4 +54,8 @@ class Results {
         results.forEach((n, v) -> stringBuilder.append(n).append("\t").append(v).append("\n"));
         return stringBuilder.toString();
     }
+
+    public Map<String, Long> getResults() {
+        return results;
+    }
 }

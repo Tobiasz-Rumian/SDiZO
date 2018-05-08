@@ -150,7 +150,7 @@ public class View {
                     place = choosePlace("Podaj miejsce, w które chcesz wstawiać");
                 else place = Place.NULL;
             }
-            Test.test(select, place, structure);
+            new Test(select, place, structure);
         }
     }
 
